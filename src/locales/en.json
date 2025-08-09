@@ -1,0 +1,125 @@
+{
+  "global": {
+    "and": "and",
+    "export": {
+      "title": "Export",
+      "message": "Do you want to export the results to PDF?",
+      "correct": "PDF exported successfully",
+      "error": "Export error"
+    },
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "save": "Save",
+    "deleted": "Deleted",
+    "edit": "Edit",
+    "search": "Search...",
+    "add": "Add",
+    "update": "Update",
+    "recover": "Activate",
+    "desactivate": "Deactivate",
+    "yes": "Yes",
+    "no": "No",
+    "error": "Something went wrong...",
+    "start": "Start",
+    "retry": "Retry",
+    "resend": "Resend Test",
+    "execute": "Execute",
+    "warning": "Warning",
+    "info": "Information",
+    "select": "Select",
+    "no-results": "No results found",
+    "loading": "Loading",
+    "language": "Language",
+    "enabled": "Enabled",
+    "operation_failed": "Operation Failed",
+    "operation_succeded": "Operation Completed",
+    "minutes": "minutes",
+    "days": "days",
+    "hours": "hours",
+    "active": "Active",
+    "inactive": "Inactive",
+    "next": "Next",
+    "prev": "Back",
+    "options": "Options",
+    "actions": "Actions",
+    "information": "Details of ",
+    "refresh": "Refresh",
+    "confirm-delete": "Do you want to delete this item? All corresponding information will be lost",
+    "disabled": "Disabled"
+  },
+  "table": {
+    "element_ok_updated": "Item updated successfully",
+    "element_ok_deleted": "Item deleted successfully",
+    "element_ok_added": "Item added successfully",
+    "information": "Details",
+    "view_information": "View Details",
+    "retire": "Remove",
+    "new_element": "Enter data for the new item",
+    "update_element": "Enter data for the item to update",
+    "assign": "Assign",
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "error": {
+    "error": "Error",
+    "operation_failed": "Operation failed",
+    "operation_succeded": "Operation completed successfully",
+    "empty": "Field cannot be empty",
+    "min_greater_than_max": "Minimum value cannot be greater than maximum",
+    "max_less_than_min": "Maximum value cannot be less than minimum",
+    "field_too_short": "Value must be at least {min}",
+    "field_too_big": "Value must be at most {max}",
+    "email": "The entered data is not a valid email",
+    "existent_email": "The email already exists",
+    "ci": "The ID is not correct",
+    "ci_date": "The date is not correct",
+    "existent_ci": "This ID already exists",
+    "existent_username": "This username already exists",
+    "sintaxis_error": "The formula has a syntax error",
+    "variables_error": "Only variables r, c, i, o are allowed",
+    "image_only": "Only images are allowed",
+    "file_size": "File must be smaller than 1MB",
+    "related_element": "This element cannot be deleted because it's currently being used by other system resources. Please disassociate it first before proceeding with deletion."
+  },
+  "errors": {
+    "title": "An error has occurred...",
+    "button": "Go back",
+    "403": "You are not authorized",
+    "404": "This page does not exist"
+  },
+  "roles": {
+    "Admin": "Administrator"
+  },
+
+  "navbar": {
+    "info": {
+      "name": "About Us"
+    },
+    "profile": {
+      "options": "User Options",
+      "name": "Profile",
+      "user": "User",
+      "close-session": "Logout",
+      "change_password": "Change Password",
+      "dialogs": {
+        "header": "Exit",
+        "message": "Do you want to log out?"
+      }
+    },
+    "management": {
+      "name": "Management",
+      "animals": "Animals"
+    },
+    "reports": {
+      "name": "Analysis"
+    },
+    "others": {
+      "name": "Others"
+    }
+  },
+  "general": {
+    "name": "Name",
+    "description": "Description"
+  }
+}

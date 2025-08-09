@@ -1,0 +1,149 @@
+{
+  "global": {
+    "and": "y",
+    "export": {
+      "title": "Exportar",
+      "message": "¿Desea exportar los resultados a PDF?",
+      "correct": "PDF exportado correctamente",
+      "error": "Error al exportar"
+    },
+    "confirm": "Aceptar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "deleted": "Eliminado",
+    "edit": "Editar",
+    "search": "Buscar...",
+    "add": "Añadir",
+    "update": "Actualizar",
+    "recover": "Activar",
+    "desactivate": "Desactivar",
+    "yes": "Sí",
+    "no": "No",
+    "error": "Algo ha salido mal...",
+    "start": "Comenzar",
+    "retry": "Reintentar",
+    "resend": "Reenviar Test",
+    "execute": "Ejecutar",
+    "warning": "Advertencia",
+    "info": "Información",
+    "select": "Seleccionar",
+    "no-results": "No se encontraron resultados",
+    "loading": "Cargando",
+    "language": "Idioma",
+    "enabled": "Habilitado",
+    "operation_failed": "Operación Fallida",
+    "operation_succeded": "Operación Completada",
+    "minutes": "minutos",
+    "days": "días",
+    "hours": "horas",
+    "active": "Activado",
+    "inactive": "Desactivado",
+    "next": "Siguiente",
+    "prev": "Atrás",
+    "options": "Opciones",
+    "actions": "Acciones",
+    "information": "Detalles del ",
+    "refresh": "Refrescar",
+    "confirm-delete": "¿Desea eliminar el elemento? Se perderá toda la información correspondiente",
+    "disabled": "Deshabilitado"
+  },
+  "table": {
+    "element_ok_updated": "Elemento actualizado correctamente",
+    "element_ok_deleted": "Elemento eliminado correctamente",
+    "element_ok_added": "Elemento añadido correctamente",
+    "information": "Detalles",
+    "view_information": "Ver Detalles",
+    "retire": "Retirar",
+
+    "new_element": "Inserte los datos del nuevo elemento",
+    "update_element": "Inserte los datos del elemento a actualizar",
+    "assign": "Asignar",
+    "open": "Abierto",
+    "closed": "Cerrado"
+  },
+  "error": {
+    "error": "Error",
+    "operation_failed": "Operación fallida",
+    "operation_succeded": "Operación completada correctamente",
+    "related_element": "No se puede eliminar este elemento porque está actualmente en uso por otros recursos del sistema. Por favor, desasócialo primero antes de proceder con la eliminación.",
+    "empty": "El campo no puede estar vacío",
+    "min_greater_than_max": "El valor mínimo no puede ser mayor que el máximo",
+    "max_less_than_min": "El valor máximo no puede ser menor que el mínimo",
+    "field_too_short": "El valor debe ser al menos {min}",
+    "field_too_big": "El valor debe ser como máximo {max}",
+    "email": "El dato introducido no es un correo",
+    "existent_email": "El email introducido ya existe",
+
+    "ci": "El carnet no es correcto",
+    "ci_date": "La fecha no es correcta",
+    "existent_ci": "Este carnet ya existe",
+    "existent_username": "Este nombre de usuario ya existe",
+    "sintaxis_error": "La fórmula tiene un error de sintaxis",
+    "variables_error": "Solo se permiten las variables r, c, i, o",
+    "image_only": "Solo se permiten imágenes",
+    "file_size": "El archivo debe ser menor a 1MB"
+  },
+  "errors": {
+    "title": "Ha ocurrido un error...",
+    "button": "Volver",
+    "403": "Usted no está autorizado",
+    "404": "Esta página no existe"
+  },
+  "roles": {
+    "Admin": "Administrador"
+  },
+
+  "navbar": {
+    "info": {
+      "name": "Sobre Nosotros"
+    },
+    "profile": {
+      "options": "Opciones de Usuario",
+      "name": "Perfil",
+      "user": "Usuario",
+      "close-session": "Cerrar Sesión",
+      "change_password": "Cambiar Contraseña",
+
+      "dialogs": {
+        "header": "Salir",
+        "message": "¿Desea cerrar sesión?"
+      }
+    },
+    "management": {
+      "name": "Gestión",
+      "animals": "Animales"
+    },
+
+    "reports": {
+      "name": "Análisis",
+      "sociometric": "Sociométrico",
+      "tested_in_group": "Usuarios examinados",
+      "preferred_avoided_roles": "Preferencia de roles por grupo",
+      "preferred_avoided_roles_user": "Preferencia de roles por usuario",
+      "mbti": "Reportes de MBTI",
+      "belbin": "Reportes de Belbin",
+      "ci": "Reportes de comunicación interpersonal",
+      "results": "Resultados"
+    },
+    "others": {
+      "name": "Otros",
+      "compatibility": "Selección de compatibles, incompatibles y liderazgo",
+      "functional_roles": "Roles funcionales"
+    },
+    "functional_roles": {
+      "name": "Roles funcionales"
+    },
+    "compatibility": {
+      "name": "Selección de compatibles, incompatibles y liderazgo"
+    }
+  },
+
+  "general": {
+    "name": "Nombre",
+    "description": "Descripción"
+  },
+  "functional_role": {
+    "title": "Roles funcionales"
+  }
+}

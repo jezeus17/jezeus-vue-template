@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+/* @import url(./animations.css);
+@import url(./tree-select.css);
+@import url(./dialog.css); */
+
+
+html {
+  width: 100vw;
+  overflow-x: hidden;
+  background: var(--color-primary-100);
+
+}
+
+html.dark {
+  background: var(--color-primary-950);
+}
+
+#app {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-weight: normal;
+}
+
+
+:root {
+  --shadow: 0 0 0.3rem 0.3rem #00000030;
+  --bradius: 1rem;
+  --p-font-family: 'Poppins', sans-serif;
+  --high-contrast-text-color: #0f172a;
+  --text-color: #334155;
+  --text-secondary-color: #64748b
+}
+
+
+body {
+  transition: color 0.5s, background-color 0.5s;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+
+}
+
+main {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+
+
+
+input:not([type="checkbox"]),
+input:not([type="radio"]) {
+  transition: border ease 0.2s;
+}
+
+.white-button img {
+  filter: invert();
+}
+
+label,
+img {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+img {
+  pointer-events: none;
+}
+
+h1 {
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-block: 1.5rem 1rem;
+  margin-inline: 0;
+}

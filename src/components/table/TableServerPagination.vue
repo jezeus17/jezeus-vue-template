@@ -21,14 +21,14 @@
                             <div></div>
                             <slot name="header"></slot>
                             <div class="flex gap-2">
-                                <CreateButton v-if="props.visibleCreateButton"
+                                <CreateButton v-if="props.visibleCreateButton" :disabled="isPending || isRefetching"
                                     @show-create-dialog="createDialogVisible = true"
                                     :customFunction="props.customAddFunction" />
 
                                 <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" variant="outlined"
                                     @click="refetch()" />
                                 <Button icon="pi pi-download" variant="outlined" @click="toggle" aria-haspopup="true"
-                                    aria-controls="overlay_menu" />
+                                    :disabled="isPending || isRefetching" aria-controls="overlay_menu" />
                                 <slot name="additional-general-actions"></slot>
                                 <Menu ref="menu" id="overlay_menu" :model="exportOptions" :popup="true" />
 
@@ -54,10 +54,10 @@
                                     :modelValue="slotProps.data[col.fieldGetter(slotProps.data)]" readonly />
                                 <template v-else-if="col.isBoolean">{{
                                     col.fieldGetter(slotProps.data) == true ? t('global.yes') : t('global.no')
-                                    }}</template>
+                                }}</template>
                                 <template v-else-if="col.fieldGetter(slotProps.data) !== undefined">{{
                                     col.fieldGetter(slotProps.data)
-                                }}</template>
+                                    }}</template>
                                 <template v-else>-</template>
                             </template>
                             <template v-else>
@@ -70,7 +70,7 @@
                                 </template>
                                 <template v-else-if="slotProps.data[col.field] !== undefined">{{
                                     slotProps.data[col.field]
-                                }}</template>
+                                    }}</template>
                                 <template v-else>-</template>
                             </template>
 

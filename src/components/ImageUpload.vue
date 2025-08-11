@@ -12,7 +12,7 @@
                     <div class="flex items-center justify-center gap-8 flex-col">
                         <img :src="existingImageUrl" alt="Existing image" class="object-contain border rounded"
                             width="300" height="150" />
-                        
+
                         <Button @click="removeExistingImage" icon="pi pi-trash" severity="danger" rounded outlined
                             class="mt-2" v-tooltip="'Remove image'" />
                     </div>
@@ -76,9 +76,10 @@
                     </div>
                 </template>
             </FileUpload>
-            <Transition name="fast-fade">
-                <small text-red v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : '' }}</small>
-            </Transition>
+            <div v-auto-animate>
+                <small class="text-red-500" v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : ''
+                }}</small>
+            </div>
         </div>
 
 

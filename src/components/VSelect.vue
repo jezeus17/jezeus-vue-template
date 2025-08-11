@@ -30,9 +30,9 @@
           <slot name="icon"></slot>{{ props.label }}
         </label>
       </FloatLabel>
-      <Transition name="fast-fade">
-        <small text-red v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : '' }}</small>
-      </Transition>
+      <div v-auto-animate>
+        <small class="text-red-500" v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : '' }}</small>
+      </div>
     </Field>
   </div>
 </template>

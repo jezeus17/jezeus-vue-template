@@ -12,13 +12,14 @@
                 </div>
             </template>
         </FileUpload>
-        <Transition name="fast-fade">
-            <small text-red v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : '' }}</small>
-        </Transition>
+        <div v-auto-animate>
+            <small class="text-red-500" v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : ''
+            }}</small>
+        </div>
     </Field>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { FileUpload } from "primevue";
 import { Field } from "vee-validate";
 import { ref } from "vue";

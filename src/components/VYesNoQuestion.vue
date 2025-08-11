@@ -8,9 +8,10 @@
       <SelectButton @change="handleChange" :allowEmpty="false" optionLabel="name" optionDisabled="disabled"
         v-model="localModel" v-bind="{ ...$attrs }" :options="options"
         :invalid="canValidate && meta.validated && !meta.valid" />
-      <Transition name="fast-fade">
-        <small text-red v-if="canValidate && meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : '' }}</small>
-      </Transition>
+      <div v-auto-animate>
+        <small class="text-red-500" v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : ''
+        }}</small>
+      </div>
     </Field>
   </div>
 </template>

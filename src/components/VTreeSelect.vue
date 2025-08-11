@@ -8,11 +8,12 @@
                     <slot name="icon"></slot>{{ $t(props.label) }}
                 </label>
             </FloatLabel>
-            <Transition name="fast-fade">
-                <small text-red v-if="meta.validated && !meta.valid">{{ errors[0]?$t(errors[0]):'' }}</small>
-            </Transition>
+            <div v-auto-animate>
+                <small class="text-red-500" v-if="meta.validated && !meta.valid">{{ errors[0] ? $t(errors[0]) : ''
+                }}</small>
+            </div>
         </Field>
-        
+
     </div>
 </template>
 
@@ -36,13 +37,13 @@ if (model.value)
     childModel.value[model.value] = true
 const updateModel = (value) => {
     if (value) {
-        const newValue =  parseInt(Object.keys(value)[0])
+        const newValue = parseInt(Object.keys(value)[0])
 
         if (!newValue)
             model.value = undefined
         else
             model.value = newValue
-    }else model.value = undefined
+    } else model.value = undefined
 }
 
 

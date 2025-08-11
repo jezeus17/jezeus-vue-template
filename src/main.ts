@@ -16,6 +16,8 @@ import VLoading from "./components/VLoading.vue";
 import VInput from "./components/VInput.vue";
 import VError from "./components/VError.vue";
 import 'reflect-metadata';
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
+
 
 const app = createApp(App);
 const vueQueryPluginOptions: VueQueryPluginOptions = {
@@ -28,6 +30,7 @@ const vueQueryPluginOptions: VueQueryPluginOptions = {
     },
 };
 app.use(VueQueryPlugin, vueQueryPluginOptions);
+app.use(autoAnimatePlugin)
 app.component("VLoading", VLoading);
 app.component("VInput", VInput);
 app.component("VError", VError);

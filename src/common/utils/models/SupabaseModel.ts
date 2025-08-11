@@ -92,7 +92,7 @@ export class SupabaseModel extends BaseModel {
     const data = submitData ?? this.getSavableData()
     const recordId = id ?? this.getID()
     const { data: responseData, error } = await supabase
-      .from('animal')
+      .from(this.getURL())
       .update([data])
       .eq(this.getFieldAsID(), recordId)
     if (error) throw error

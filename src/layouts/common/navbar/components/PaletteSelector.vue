@@ -21,14 +21,33 @@
 <script lang="ts" setup>
 import { updatePrimaryPalette } from '@primeuix/themes';
 import { Button, Popover } from 'primevue';
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const op = ref();
+const selectedColor = ref<string>()
 const colors = ['emerald', 'green', 'indigo', 'lime', 'red', 'orange', 'amber', 'yellow', 'teal',
     'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose',
     'slate', 'zinc', 'neutral'
 ]
+
+const toggle = (event: Event) => {
+    op.value.toggle(event);
+}
+
+
+onMounted(() => {
+    const savedMode = localStorage.getItem('primaryColor');
+    selectedColor.value = savedMode !== null ? JSON.parse(savedMode) : 'blue'
+    changePrimaryColor(selectedColor.value)
+});
+
+// function toggleDarkMode() {
+//   useEvents().dispatch('darkmode-change')
+// }
+
 const changePrimaryColor = (color: string) => {
+    selectedColor.value = color
+    localStorage.setItem('primaryColor', JSON.stringify(color));
     updatePrimaryPalette({
         50: '{' + color + '.50}',
         100: '{' + color + '.100}',
@@ -42,9 +61,6 @@ const changePrimaryColor = (color: string) => {
         900: '{' + color + '.900}',
         950: '{' + color + '.950}'
     });
-}
-const toggle = (event: Event) => {
-    op.value.toggle(event);
 }
 </script>
 

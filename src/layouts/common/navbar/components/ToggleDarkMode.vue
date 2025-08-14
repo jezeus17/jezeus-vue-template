@@ -1,12 +1,7 @@
 <template>
   <div>
-    <Button 
-      :icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'" 
-      class="w-8" 
-      severity="secondary" 
-      @click="toggleDarkMode()"
-      v-tooltip.left="t(darkMode ? 'light' : 'dark')"
-    />
+    <Button :icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'" class="w-8" severity="secondary" @click="toggleDarkMode()"
+      v-tooltip.left="t(darkMode ? 'light' : 'dark')" />
   </div>
 </template>
 
@@ -18,11 +13,11 @@ import { checkSystemPreference, updateDarkClass } from '@/common/utils/darkModeU
 import useEvents from '@/common/utils/useEvents';
 
 const darkMode = ref<boolean>(false);
-const {t}=useI18n()
+const { t } = useI18n()
 
 onMounted(() => {
   const savedMode = localStorage.getItem('darkMode');
-  darkMode.value = savedMode !== null? JSON.parse(savedMode):checkSystemPreference()
+  darkMode.value = savedMode !== null ? JSON.parse(savedMode) : checkSystemPreference()
   updateDarkClass(darkMode.value);
 });
 
@@ -40,12 +35,12 @@ function toggleDarkMode() {
 </script>
 
 <i18n lang="json">{
-    "es": {
-        "dark":"Modo oscuro",
-        "light":"Modo claro"
-    },
-    "en": {
-        "dark":"Dark mode",
-        "light":"Light mode"
-    }
+  "es": {
+    "dark": "Modo oscuro",
+    "light": "Modo claro"
+  },
+  "en": {
+    "dark": "Dark mode",
+    "light": "Light mode"
+  }
 }</i18n>

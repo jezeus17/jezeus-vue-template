@@ -1,7 +1,8 @@
 import { schema } from "../schemas/animal_kingdom.schema";
 import { ID, NotSavable } from "@/common/utils/Decorators";
 import { columns } from "./animal_kingdom.columns";
-import { SupabaseModel } from "@/common/utils/models/SupabaseModel";
+import { SupabaseModel } from "@/common/models/SupabaseModel";
+import { locales } from "../locales/locales";
 
 
 export class AnimalKingdom extends SupabaseModel {
@@ -14,4 +15,5 @@ export class AnimalKingdom extends SupabaseModel {
   static readonly url: string = "animal_kingdom";
   static readonly columns = columns;
   static readonly schema = schema;
+  static readonly locales = locales
 }

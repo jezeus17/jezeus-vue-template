@@ -3,7 +3,7 @@ import { onMounted, provide, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button, Card, useToast } from "primevue";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { sendRequest } from "@/common/utils/sendRequest";
+import { sendRequest } from "@/common/http/sendRequest";
 import { useRoute } from "vue-router";
 import router from "@/router";
 const { t } = useI18n();

@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { Button } from 'primevue';
 import { inject } from 'vue';
-import { BaseModel } from '@/common/utils/models/BaseModel';
+import { BaseModel } from '@/common/models/BaseModel';
 
 
 const model = inject<BaseModel>('model')

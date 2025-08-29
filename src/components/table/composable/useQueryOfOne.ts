@@ -1,11 +1,11 @@
-import type { BaseModel } from "@/common/utils/models/BaseModel";
+import type { BaseModel } from "@/common/models/BaseModel";
 import { useQuery } from "@tanstack/vue-query";
 
 export const useQueryOfOne = (
   queryKey: string,
   model: BaseModel,
   queryOptions?: object,
-  customFunction?: (id: number, queryOptions?: object) => void
+  customFunction?: (id: number, queryOptions?: object) => Promise<object>
 ) => {
   const {
     data: dataOfOne,
@@ -17,7 +17,7 @@ export const useQueryOfOne = (
     refetch: refetchOfOne,
   } = useQuery({
     queryKey: [queryKey + "-one"],
-    queryFn: () => customFunction ? customFunction(model.getID(), queryOptions) : model.getOne(queryOptions),
+    queryFn: () => customFunction ? customFunction(model.getID(), queryOptions) : model.getSelf(queryOptions),
     enabled: false,
   });
   return {

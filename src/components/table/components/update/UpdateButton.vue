@@ -4,7 +4,7 @@
 </template>
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
-import { BaseModel } from '@/common/utils/models/BaseModel';
+import { BaseModel } from '@/common/models/BaseModel';
 import { useQueryClient } from '@tanstack/vue-query';
 import { Button } from 'primevue';
 

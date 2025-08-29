@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import { useSendRequest } from "../utils/fetch";
+import { useSendRequest } from "../http/fetch";
 import { reactive } from "vue";
-import useEvents from "../utils/useEvents";
-import TokenHandler from "../utils/token-handler";
-import { sendRequest } from "@/common/utils/sendRequest";
-import { useLocalI18n } from "../utils/useLocalI18n";
+import useEvents from "../composables/useEvents";
+import TokenHandler from "./token-handler";
+import { sendRequest } from "@/common/http/sendRequest";
+import { useLocalI18n } from "../composables/useLocalI18n";
 
 const localMessages = {
   es: {

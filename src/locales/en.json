@@ -109,7 +109,8 @@
     },
     "management": {
       "name": "Management",
-      "animals": "Animals"
+      "animals": "Animals",
+      "animal_kingdoms": "Animal Kingdoms"
     },
     "reports": {
       "name": "Analysis"

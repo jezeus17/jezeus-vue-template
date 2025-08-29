@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import VUserCard from "@/components/VUserCard.vue";
+import VUserCard from "@/components/partials/VUserCard.vue";
 import { userStore } from "../../store/user-store";
 import { useI18n } from "vue-i18n";
 const user = userStore();
@@ -9,7 +9,7 @@ const { t } = useI18n()
 
   <h2 class="page-title">{{ t("title") }}</h2>
   <VUserCard m-auto mt-4rem :name="user.name + ' ' + user.last_name" :role="user.role" :id="user.ci"
-     :mail="user.email"  />
+    :mail="user.email" />
 
 
 </template>
@@ -17,7 +17,7 @@ const { t } = useI18n()
   "es": {
     "title": "Mi perfil"
   },
-  "en":{
+  "en": {
     "title": "My Profile"
   }
 }</i18n>

@@ -5,7 +5,7 @@ import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import ConfirmPopup from "primevue/confirmpopup";
 import DynamicDialog from "primevue/dynamicdialog";
-import useEvents from "./common/utils/useEvents";
+import useEvents from "./common/composables/useEvents";
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
 

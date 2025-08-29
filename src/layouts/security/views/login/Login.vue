@@ -2,12 +2,12 @@
 import { onMounted, provide, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { siteStore } from "@/common/site/siteStore";
-import VInput from "@/components/VInput.vue";
+import VInput from "@/components/form/input/VInput.vue";
 import { Form } from "vee-validate";
 import { loginSchema } from "./loginSchema";
 import { Button, Card, Dialog, Divider } from "primevue";
-import useEvents from "@/common/utils/useEvents";
-import VSelect from "@/components/VSelect.vue";
+import useEvents from "@/common/composables/useEvents";
+import VSelect from "@/components/form/input/VSelect.vue";
 import { selectGroupSchema } from "./selectGroupSchema";
 import { useQueryClient } from "@tanstack/vue-query";
 const { t } = useI18n();

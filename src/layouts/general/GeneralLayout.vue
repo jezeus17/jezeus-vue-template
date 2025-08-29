@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import VNavbar from "@/layouts/common/navbar/Navbar.vue";
+import Navbar from "@/components/navbar/Navbar.vue";
 window.scrollTo(0, 0);
 </script>
 
 <template>
   <header>
     <nav>
-      <VNavbar />
+      <Navbar absolute />
     </nav>
   </header>
   <main>

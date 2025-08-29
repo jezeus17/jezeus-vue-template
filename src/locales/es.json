@@ -112,38 +112,8 @@
     },
     "management": {
       "name": "Gestión",
-      "animals": "Animales"
-    },
-
-    "reports": {
-      "name": "Análisis",
-      "sociometric": "Sociométrico",
-      "tested_in_group": "Usuarios examinados",
-      "preferred_avoided_roles": "Preferencia de roles por grupo",
-      "preferred_avoided_roles_user": "Preferencia de roles por usuario",
-      "mbti": "Reportes de MBTI",
-      "belbin": "Reportes de Belbin",
-      "ci": "Reportes de comunicación interpersonal",
-      "results": "Resultados"
-    },
-    "others": {
-      "name": "Otros",
-      "compatibility": "Selección de compatibles, incompatibles y liderazgo",
-      "functional_roles": "Roles funcionales"
-    },
-    "functional_roles": {
-      "name": "Roles funcionales"
-    },
-    "compatibility": {
-      "name": "Selección de compatibles, incompatibles y liderazgo"
+      "animals": "Animales",
+      "animal_kingdoms": "Reinos Animales"
     }
-  },
-
-  "general": {
-    "name": "Nombre",
-    "description": "Descripción"
-  },
-  "functional_role": {
-    "title": "Roles funcionales"
   }
 }

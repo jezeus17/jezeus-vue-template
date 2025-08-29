@@ -4,7 +4,7 @@
 </template>
 <script setup lang="ts">
 import { inject } from 'vue';
-import { BaseModel } from '@/common/utils/models/BaseModel';
+import { BaseModel } from '@/common/models/BaseModel';
 import { Button } from 'primevue';
 
 

@@ -1,24 +1,22 @@
 <template>
 
-    <Dialog v-model:visible="visible" modal :header="$t('global.update') + ' ' + header"
-        class="w-4/5 max-w-50rem min-w-25rem">
-        <span>{{ $t('table.update_element') }}</span>
-        <Form @submit="(values) => mutate(values)" :validation-schema="model?.getUpdateSchema()">
-            <div class="dialog-form">
-                <slot name="form"></slot>
-            </div>
-            <div class="dialog-footer">
-                <Button type="button" :label="$t('global.cancel')" severity="secondary"
-                    @click="visible = false"></Button>
+  <Dialog v-model:visible="visible" modal :header="$t('global.update') + ' ' + header" class="w-fit min-w-[30rem]">
+    <span>{{ $t('table.update_element') }}</span>
+    <Form @submit="(values) => mutate(values)" :validation-schema="model?.getUpdateSchema()">
+      <div class="dialog-form">
+        <slot name="form"></slot>
+      </div>
+      <div class="dialog-footer">
+        <Button type="button" :label="$t('global.cancel')" severity="secondary" @click="visible = false"></Button>
 
-                <Button w-8rem type="submit" :loading="isPending || isFormDataLoading" :label="t('global.save')" />
+        <Button w-8rem type="submit" :loading="isPending || isFormDataLoading" :label="t('global.save')" />
 
-            </div>
-        </Form>
-    </Dialog>
+      </div>
+    </Form>
+  </Dialog>
 </template>
 <script setup lang="ts">
-import { BaseModel } from '@/common/utils/models/BaseModel';
+import { BaseModel } from '@/common/models/BaseModel';
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { Button, Dialog, useToast } from 'primevue';
@@ -32,10 +30,10 @@ const queryClient = useQueryClient()
 
 
 defineProps({
-    header: {
-        type: String,
-        required: true
-    }
+  header: {
+    type: String,
+    required: true
+  }
 })
 const visible = defineModel()
 const queryKey = inject<Ref<string>>('queryKey')
@@ -45,19 +43,19 @@ const isFormDataLoading = inject<Ref<boolean>>('isFormDataLoading')
 
 
 const { mutate, isPending } = useMutation({
-    mutationKey: [`${queryKey}-update`],
-    mutationFn: (data: object) => model.update(data),
-    onSuccess: async () => {
-        await queryClient.refetchQueries({
-            queryKey: [queryKey]
-        })
-        toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
-        visible.value = false
-        model?.clearData()
-    },
-    onError: (error) => {
-        toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.statusCode == 404 ? t('table.relations_error') : t(error.message), life: 5000 });
-    }
+  mutationKey: [`${queryKey}-update`],
+  mutationFn: (data: object) => model.update(data),
+  onSuccess: async () => {
+    await queryClient.refetchQueries({
+      queryKey: [queryKey]
+    })
+    toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
+    visible.value = false
+    model?.clearData()
+  },
+  onError: (error) => {
+    toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.statusCode == 404 ? t('table.relations_error') : t(error.message), life: 5000 });
+  }
 })
 
 </script>

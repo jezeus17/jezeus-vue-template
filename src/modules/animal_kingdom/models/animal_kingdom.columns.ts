@@ -3,11 +3,9 @@ export const columns = [
 
   {
     field: "name",
-    header: "animal.name",
+    header: "kingdom.name",
     filter: true
   },
-
-
 
 
   {

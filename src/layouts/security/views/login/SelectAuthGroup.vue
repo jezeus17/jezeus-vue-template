@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {  provide, ref } from "vue";
+import { provide, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { siteStore } from "@/common/site/siteStore";
-import VInput from "@/components/VInput.vue";
+import VInput from "@/components/form/input/VInput.vue";
 import { Form } from "vee-validate";
 import { loginSchema } from "./loginSchema";
 import { Button, Card } from "primevue";
@@ -23,9 +23,6 @@ window.scrollTo(0, 0);
 
 <template>
   <main centered class="gradient-background">
-    <!--<div fixed left-0.5rem top-0.5rem>
-      <VLanguageChanger />
-    </div>-->
 
     <Card anim-slide-in-from-bottom-1 h-fit>
       <template #content>
@@ -43,13 +40,13 @@ window.scrollTo(0, 0);
 
             <div flex flex-col gap-8>
 
-              
-              
+
+
             </div>
 
 
-            
-            <Button w-full type="submit" id="login-button" :label="t('login')" :loading="login.loading"/>
+
+            <Button w-full type="submit" id="login-button" :label="t('login')" :loading="login.loading" />
             <!-- <RouterLink  text-primary to="/sign-up">{{ $t('login.sign-up') }}</RouterLink> -->
           </Form>
         </div>

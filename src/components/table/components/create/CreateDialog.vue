@@ -1,26 +1,24 @@
 <template>
 
-    <Dialog v-model:visible="visible" modal :header="$t('global.add') + ' ' + header"
-        class="w-4/5 max-w-50rem min-w-25rem">
+  <Dialog v-model:visible="visible" modal :header="$t('global.add') + ' ' + header" class="w-fit min-w-[30rem]">
 
-        <span>{{ $t('table.new_element') }}</span>
-        <Form @submit="() => mutate()" :validation-schema="model?.getSchema()">
-            <div class="dialog-form">
-                <slot name="form"></slot>
-            </div>
-            <div class="dialog-footer">
-                <Button type="button" :label="$t('global.cancel')" severity="secondary"
-                    @click="visible = false"></Button>
+    <span>{{ $t('table.new_element') }}</span>
+    <Form @submit="() => mutate()" :validation-schema="model?.getSchema()">
+      <div class="dialog-form">
+        <slot name="form"></slot>
+      </div>
+      <div class="dialog-footer">
+        <Button type="button" :label="$t('global.cancel')" severity="secondary" @click="visible = false"></Button>
 
-                <Button w-8rem type="submit" :loading="isPending || isFormDataLoading" :label="t('global.save')" />
+        <Button w-8rem type="submit" :loading="isPending || isFormDataLoading" :label="t('global.save')" />
 
-            </div>
-        </Form>
+      </div>
+    </Form>
 
-    </Dialog>
+  </Dialog>
 </template>
 <script setup lang="ts">
-import { BaseModel } from '@/common/utils/models/BaseModel';
+import { BaseModel } from '@/common/models/BaseModel';
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { Button, Dialog, useToast } from 'primevue';
@@ -34,10 +32,10 @@ const queryClient = useQueryClient()
 
 
 defineProps({
-    header: {
-        type: String,
-        required: true
-    }
+  header: {
+    type: String,
+    required: true
+  }
 })
 
 const visible = defineModel() as Ref<boolean>
@@ -48,19 +46,19 @@ const isFormDataLoading = inject<Ref<boolean>>('isFormDataLoading')
 
 
 const { mutate, isPending } = useMutation({
-    mutationKey: [`${queryKey}-add`],
-    mutationFn: () => model.create(),
-    onSuccess: async () => {
-        await queryClient.refetchQueries({
-            queryKey: [queryKey]
-        })
-        toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_added'), life: 5000 });
-        visible.value = false
-        model?.clearData()
-    },
-    onError: (error) => {
-        toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t(error.message), life: 5000 });
-    }
+  mutationKey: [`${queryKey}-add`],
+  mutationFn: () => model.create(),
+  onSuccess: async () => {
+    await queryClient.refetchQueries({
+      queryKey: [queryKey]
+    })
+    toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_added'), life: 5000 });
+    visible.value = false
+    model?.clearData()
+  },
+  onError: (error) => {
+    toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t(error.message), life: 5000 });
+  }
 })
 
 </script>

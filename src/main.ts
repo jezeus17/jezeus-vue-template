@@ -12,41 +12,35 @@ import { VueQueryPlugin } from "@tanstack/vue-query";
 import type { VueQueryPluginOptions } from "@tanstack/vue-query";
 import { MyPreset } from "./plugins/primevue-preset";
 import { i18n } from "./plugins/i18n";
-import VLoading from "./components/VLoading.vue";
-import VInput from "./components/VInput.vue";
-import VError from "./components/VError.vue";
 import 'reflect-metadata';
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
 
 const app = createApp(App);
 const vueQueryPluginOptions: VueQueryPluginOptions = {
-    queryClientConfig: {
-        defaultOptions: {
-            queries: {
-                refetchOnWindowFocus: false,
-            },
-        },
+  queryClientConfig: {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
     },
+  },
 };
 app.use(VueQueryPlugin, vueQueryPluginOptions);
 app.use(autoAnimatePlugin)
-app.component("VLoading", VLoading);
-app.component("VInput", VInput);
-app.component("VError", VError);
 app.directive("ripple", Ripple);
 app.directive("tooltip", Tooltip);
 
 app.use(router);
 app.use(PrimeVue, {
-    theme: {
-        preset: MyPreset,
-        options: {
-            darkModeSelector: '.dark',
-            cssLayer: false,
-        },
+  theme: {
+    preset: MyPreset,
+    options: {
+      darkModeSelector: '.dark',
+      cssLayer: false,
     },
-    ripple: true,
+  },
+  ripple: true,
 });
 app.use(ToastService);
 app.use(ConfirmationService);

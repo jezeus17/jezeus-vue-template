@@ -1,0 +1,10 @@
+[build]
+  publish = "dist"
+  command = "pnpm run build-only"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[secrets]
+  scan_enabled = true
+  omit_keys = ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY"]

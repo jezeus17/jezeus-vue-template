@@ -9,7 +9,7 @@ import VInput from "@/components/form/input/VInput.vue";
 
 import { type ModelRef } from "vue";
 import { Animal } from "../../models/animal.model";
-import { AnimalKingdom } from "@/modules/animal_kingdom/models/animal_kingdom.model";
+import { AnimalKingdom } from "@/modules/management/animal_kingdom/models/animal_kingdom.model";
 import ServerSelect from "@/components/form/input/ServerSelect.vue";
 import { locales } from "../../locales/locales";
 const { t } = useI18n(locales)

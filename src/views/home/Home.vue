@@ -26,7 +26,7 @@
       </div>
       <div class=" justify-center w-fit order-1  items-center flex  py-6 text-center">
         <div class="primeicon">
-          <img src="/public/capibara.png" class="w-[5rem] lg:w-[15rem] "></img>
+          <img src="/capibara.png" class="w-[5rem] lg:w-[15rem] "></img>
         </div>
 
 
@@ -38,6 +38,9 @@
         :icon="card.icon" />
     </div>
   </section>
+  <footer class="w-full my-10 flex text-xl justify-center items-center text-primary p-8 text-center">
+    © {{ new Date().getFullYear() }} Made By jezeus17
+  </footer>
 
 
 </template>
@@ -142,7 +145,7 @@ const cards = ref([
     "primevue": "Biblioteca de componentes UI ricos y personalizables para Vue.js.",
     "tailwind": "Framework CSS utility-first para diseñar interfaces rápidamente.",
     "i18n": "Internacionalización para aplicaciones Vue.js con soporte multi-idioma.",
-    "supabase": "Backend como servicio con base de datos PostgreSQL y autenticación.",
+    "supabase": "Backend como servicio con base de datos PostgreSQL.",
     "typescript": "JavaScript tipado para mejorar la calidad y mantenibilidad del código."
   },
   "en": {
@@ -152,7 +155,7 @@ const cards = ref([
     "primevue": "Rich and customizable UI component library for Vue.js.",
     "tailwind": "Utility-first CSS framework for rapidly designing custom interfaces.",
     "i18n": "Internationalization for Vue.js applications with multi-language support.",
-    "supabase": "Backend as a service with PostgreSQL database and authentication.",
+    "supabase": "Backend as a service with PostgreSQL database.",
     "typescript": "Typed JavaScript for improved code quality and maintainability."
   }
 }</i18n>

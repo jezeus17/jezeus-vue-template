@@ -33,12 +33,11 @@ import Menubar from "primevue/menubar";
 import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
-import UserAvatar from "./components/UserAvatar.vue";
 import ToggleDarkMode from "./components/ToggleDarkMode.vue";
 import SelectLanguage from "./components/SelectLanguage.vue";
 import TokenHandler from "@/common/site/token-handler";
 import PrimaryColorSelector from "./components/PaletteSelector.vue";
-import { filterMenuByRole, getNavbarItems, updateNavbarLabels } from "./utils";
+import { getNavbarItems, updateNavbarLabels } from "./utils";
 const { t, locale } = useI18n();
 
 const props = defineProps({

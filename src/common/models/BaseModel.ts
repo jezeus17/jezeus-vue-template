@@ -88,7 +88,7 @@ export abstract class BaseModel {
   }
 
   abstract getAll(params: object): Promise<ResponseData>
-  abstract getAllPaginated(params: object): Promise<PaginatedResponseData>
+  abstract getAllPaginated(params?: object): Promise<PaginatedResponseData>
   abstract getOne(id: number | string, params?: object): Promise<object>
   abstract getSelf(params?: object): Promise<object>
   abstract create(data?: object): void

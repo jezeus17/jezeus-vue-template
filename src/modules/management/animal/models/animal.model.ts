@@ -2,7 +2,7 @@ import { schema } from "../schemas/animal.schema";
 import { ID, NotSavable } from "@/common/utils/Decorators";
 import { columns } from "./animal.columns";
 import { SupabaseModel } from "@/common/models/SupabaseModel";
-import type { AnimalKingdom } from "@/modules/animal_kingdom/models/animal_kingdom.model";
+import type { AnimalKingdom } from "@/modules/management/animal_kingdom/models/animal_kingdom.model";
 import { locales } from "../locales/locales";
 
 
@@ -13,6 +13,7 @@ export class Animal extends SupabaseModel {
   created_at!: string;
   name!: string;
   fk_animal_kingdom!: number
+  @NotSavable
   animal_kingdom!: AnimalKingdom
   static readonly url: string = "animal";
   static readonly columns = columns;

@@ -6,13 +6,13 @@ export const columns: ColumnProps[] = [
   {
     field: "name",
     header: "animal.name",
-    filter: true
+    filter: false
   },
   {
     field: "fk_animal_kingdom",
     fieldGetter: (animal) => (animal.animal_kingdom as Animal).name,
     header: "animal.kingdom",
-    filter: true
+    filter: false
   },
 
   {

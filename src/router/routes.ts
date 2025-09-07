@@ -1,8 +1,5 @@
 import AdminLayout from "@/layouts/admin/AdminLayout.vue";
 import GeneralLayout from "@/layouts/general/GeneralLayout.vue";
-import Login from "@/layouts/security/views/login/Login.vue";
-import AnimalsManagement from "@/modules/animal/views/AnimalsManagement.vue";
-import AnimalKindomsManagement from "@/modules/animal_kingdom/views/AnimalKingdomsManagement.vue";
 import NotAuthorized from "@/views/errors/NotAuthorized.vue";
 import NotFound from "@/views/errors/NotFound.vue";
 import Home from "@/views/home/Home.vue";
@@ -29,11 +26,11 @@ export default [
         component: Home,
         meta: { requiresAuth: true },
       },
-      {
-        path: "/login",
-        name: "login",
-        component: Login,
-      },
+      // {
+      //   path: "/login",
+      //   name: "login",
+      //   component: Login,
+      // },
       // {
       //   path: "/sign-up",
       //   name: "sign-up",

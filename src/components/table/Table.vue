@@ -1,10 +1,10 @@
 <template>
   <Card class="overflow-auto h-full border border-solid border-[var(--p-menubar-border-color)]">
     <template #content>
-
-      <DataTable :class="internDatatable ? 'intern-datatable' : ''" v-model:expandedRows="expandedRows" scrollable
-        v-model:filters="filters" :lazy="true" @filter="onFilter" filterDisplay="menu" scrollHeight="flex" removableSort
-        ref="dt" size="small" :value="tableData" :rows="5">
+      <span class="italic">working on sorting and filtering...</span>
+      <DataTable v-if="dataMode == 'table'" :class="internDatatable ? 'intern-datatable' : ''"
+        v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true" @filter="onFilter"
+        filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData" :rows="5">
 
 
         <template #header>
@@ -40,7 +40,7 @@
         <Column expander v-if="hasExpander" style="width: 1rem" />
         <template v-for="(col, index) in props.model.getColumns()" :key="index">
 
-          <Column v-if="!col.isActionsColumn" :filterField="col.field" sortable :field="col.field"
+          <Column v-if="!col.isActionsColumn" :filterField="col.field" :field="col.field"
             :header="t(col.header as string)" :filterMatchModeOptions="filterOptions">
 
 
@@ -50,10 +50,10 @@
                 <Rating v-if="col.isRating" :modelValue="slotProps.data[col.fieldGetter(slotProps.data)]" readonly />
                 <template v-else-if="col.isBoolean">{{
                   col.fieldGetter(slotProps.data) == true ? t('global.yes') : t('global.no')
-                }}</template>
+                  }}</template>
                 <template v-else-if="col.fieldGetter(slotProps.data) !== undefined">{{
                   col.fieldGetter(slotProps.data)
-                }}</template>
+                  }}</template>
                 <template v-else>-</template>
               </template>
               <template v-else>
@@ -65,7 +65,7 @@
                 </template>
                 <template v-else-if="slotProps.data[col.field] !== undefined">{{
                   slotProps.data[col.field]
-                }}</template>
+                  }}</template>
                 <template v-else>-</template>
               </template>
 
@@ -163,6 +163,23 @@
           </Paginator>
         </template>
       </DataTable>
+
+      <!-- <VPaginator v-else-if="dataMode == 'cards'" :query-function="() => model.getAllPaginated({
+        limit: limit,
+        offset: offset,
+        ...props.queryOptions,
+        where: { ...filtersForServer },
+      })" gridClass="grid-cols-1 sm:grid-cols-2" :query-key="queryKey">
+        <template #header>
+          <h2 text-left>{{ t('title') }}</h2>
+        </template>
+
+        <template #item-template="{ data }">
+          <slot name="item-template" :data></slot>
+
+
+        </template>
+      </VPaginator> -->
     </template>
   </Card>
 
@@ -228,6 +245,7 @@ const totalRecords = ref(0)
 const totalPages = ref(0)
 const dt = ref();
 const tableData = ref()
+const dataMode: Ref<'table' | 'cards'> = ref('table')
 
 const filters: Ref<object> = ref({});
 

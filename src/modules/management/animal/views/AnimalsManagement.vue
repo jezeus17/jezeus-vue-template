@@ -14,6 +14,9 @@
       <UpdateAnimal v-model="animal" />
     </template>
 
+
+
+
   </TableServerPagination>
 </template>
 <script setup lang="ts">

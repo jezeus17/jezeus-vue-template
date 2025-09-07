@@ -24,7 +24,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { siteStore } from "@/common/site/siteStore";
 import { getNavbarItems, updateNavbarLabels } from "@/components/navbar/utils";
 import Menu from "primevue/menu";
 import { ref, watch } from "vue";
@@ -37,20 +36,7 @@ const emit = defineEmits(['close'])
 const items = ref(
   [
     ...getNavbarItems(() => emit('close')),
-    { separator: true },
-    {
-      label: ' ',
-      i18n: 'profile',
-      items: [
 
-        {
-          label: ' ',
-          i18n: 'close-session',
-          icon: 'pi pi-sign-out',
-          command: () => siteStore().logout()
-        }
-      ]
-    }
   ])
 
 updateNavbarLabels(items.value, t);

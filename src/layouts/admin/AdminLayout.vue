@@ -11,7 +11,7 @@ const visible = ref(false)
 
 <template>
 
-  <main class="gradient-background w-screen h-screen flex anim-fade-in-1">
+  <main class="bg-[#f8fafc] dark:bg-[#09090b] w-screen h-screen flex anim-fade-in-1">
     <aside class="hidden xl:flex ">
       <AdminSideBar />
 

@@ -15,10 +15,9 @@
             rounded iconPos="right" @click="router.push('/animals')" :label="$t('global.start')"
             icon="pi pi-arrow-right">
           </Button>
-          <Button v-ripple
+          <Button v-ripple as="a" href="https://github.com/jezeus17/jezeus-vue-template" target="_blank" rel="noopener"
             class="mx-auto w-10rem  focus:shadow-outline lg:mx-0 transform transition duration-300 ease hover:scale-105 my-6 py-4 px-8 rounded-full shadow-lg"
-            rounded iconPos="right" @click="router.push('/animals')" :label="'Github'" icon="pi pi-github"
-            variant="outlined">
+            rounded iconPos="right" :label="'Github'" icon="pi pi-github" variant="outlined">
           </Button>
         </div>
 

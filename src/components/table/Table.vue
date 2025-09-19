@@ -1,41 +1,26 @@
 <template>
-  <Card class="overflow-auto h-full border border-solid border-[var(--p-menubar-border-color)]">
+  <Card class="overflow-auto h-full border border-solid border-[var(--p-menubar-border-color)] !p-0">
+
     <template #content>
-      <span class="italic">working on sorting and filtering...</span>
+
       <DataTable v-if="dataMode == 'table'" :class="internDatatable ? 'intern-datatable' : ''"
         v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true" @filter="onFilter"
         filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData" :rows="5">
 
 
         <template #header>
-          <div class="custom-table-header">
-            <h1 class="text-xl m-0 font-semibold">{{ title ?? t('title') }}</h1>
-            <div class="custom-table-header__options">
-              <!-- <IconField>
-                                <InputIcon>
-                                    <i class="pi pi-search" />
-                                </InputIcon>
-                                <InputText w-12rem lg:w-20rem v-model="filters['global'].value"
-                                    :placeholder="$t('global.search')" />
-                            </IconField> -->
-              <div></div>
+          <TableHeader @open-create-dialog="createDialogVisible = true" :is-pending="isPending || isRefetching" :refetch
+            :data @change-mode="dataMode = 'cards'">
+            <template #header>
               <slot name="header"></slot>
-              <div class="flex gap-2">
-                <CreateButton v-if="!props.hideCreateButton" :disabled="isPending || isRefetching"
-                  @show-create-dialog="createDialogVisible = true" :customFunction="props.customAddFunction" />
-
-                <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" variant="outlined" @click="refetch()" />
-                <Button icon="pi pi-download" variant="outlined" @click="toggle" aria-haspopup="true"
-                  :disabled="isPending || isRefetching" aria-controls="overlay_menu" />
-                <slot name="additional-general-actions"></slot>
-                <Menu ref="menu" id="overlay_menu" :model="exportOptions" :popup="true" />
-
-
-              </div>
-
-            </div>
-          </div>
-
+            </template>
+            <template #statistics-cards>
+              <slot name="statistics-cards"></slot>
+            </template>
+            <template #additional-general-actions>
+              <slot name="additional-general-actions"></slot>
+            </template>
+          </TableHeader>
         </template>
         <Column expander v-if="hasExpander" style="width: 1rem" />
         <template v-for="(col, index) in props.model.getColumns()" :key="index">
@@ -50,10 +35,10 @@
                 <Rating v-if="col.isRating" :modelValue="slotProps.data[col.fieldGetter(slotProps.data)]" readonly />
                 <template v-else-if="col.isBoolean">{{
                   col.fieldGetter(slotProps.data) == true ? t('global.yes') : t('global.no')
-                  }}</template>
+                }}</template>
                 <template v-else-if="col.fieldGetter(slotProps.data) !== undefined">{{
                   col.fieldGetter(slotProps.data)
-                  }}</template>
+                }}</template>
                 <template v-else>-</template>
               </template>
               <template v-else>
@@ -65,7 +50,7 @@
                 </template>
                 <template v-else-if="slotProps.data[col.field] !== undefined">{{
                   slotProps.data[col.field]
-                  }}</template>
+                }}</template>
                 <template v-else>-</template>
               </template>
 
@@ -97,36 +82,9 @@
 
             <template #body=slotProps>
               <Skeleton v-if="isRefetching || isPending" width="60%" borderRadius=".4rem" height="1.5rem" />
+              <TableActions v-else :data="slotProps.data" :column="col" @show-update-dialog="updateDialogVisible = true"
+                @show-view-dialog="viewDialogVisible = true" />
 
-              <div v-else class="custom-table-actions">
-                <ViewButton :data-to-show="slotProps.data" v-if="!props.hideViewButton &&
-                  (isLogicErase ? slotProps.data[props.model.getFieldAsActive()] == true : true)
-                  && (col.visibleViewFunction ? col.visibleViewFunction(slotProps.data) : true)"
-                  :refetch="refetchOfOne" @show-view-dialog="viewDialogVisible = true" />
-
-                <UpdateButton :data-to-update="slotProps.data" v-if="!props.hideUpdateButton &&
-                  (isLogicErase ? slotProps.data[props.model.getFieldAsActive()] == true : true)
-                  && (col.visibleUpdateFunction ? col.visibleUpdateFunction(slotProps.data) : true)"
-                  @show-update-dialog="updateDialogVisible = true" :custom-function="customUpdateFunction" />
-                <template
-                  v-if="!props.hideDeleteButton && (col.visibleDeleteFunction ? col.visibleDeleteFunction(slotProps.data) : true)">
-
-                  <DeleteButton :data-to-delete="slotProps.data" v-if="!isLogicErase" />
-
-                  <ActivateButton :data-to-activate="slotProps.data"
-                    v-else-if="slotProps.data[props.model.getFieldAsActive()] == false" />
-                  <DesactivateButton :data-to-desactivate="slotProps.data" v-else />
-                </template>
-                <template v-if="props.extraOptions">
-                  <template v-for="option in props.extraOptions" :key="option">
-                    <Button v-if="option.renderIf(slotProps.data)" :severity="option.severity" rounded variant="text"
-                      :icon="'pi ' + option.icon" v-tooltip="$t(option.tooltip)"
-                      @click="option.action(slotProps.data, $event)" />
-                  </template>
-                </template>
-
-
-              </div>
             </template>
           </Column>
         </template>
@@ -164,14 +122,27 @@
         </template>
       </DataTable>
 
-      <!-- <VPaginator v-else-if="dataMode == 'cards'" :query-function="() => model.getAllPaginated({
-        limit: limit,
-        offset: offset,
-        ...props.queryOptions,
-        where: { ...filtersForServer },
-      })" gridClass="grid-cols-1 sm:grid-cols-2" :query-key="queryKey">
+      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :model :data="data?.data" :refetch
+        :is-pending="isPending || isRefetching" :query-options="{
+          limit: limit,
+          offset: offset,
+          ...props.queryOptions,
+          where: { ...filtersForServer },
+        }" :gridClass @show-update-dialog="updateDialogVisible = true" @show-view-dialog="viewDialogVisible = true">
         <template #header>
-          <h2 text-left>{{ t('title') }}</h2>
+          <TableHeader @open-create-dialog="createDialogVisible = true" @change-mode="dataMode = 'table'"
+            :is-pending="isPending || isRefetching" :refetch :data>
+            <template #header>
+              <slot name="header"></slot>
+            </template>
+            <template #statistics-cards>
+              <slot name="statistics-cards"></slot>
+            </template>
+            <template #additional-general-actions>
+              <slot name="additional-general-actions"></slot>
+            </template>
+
+          </TableHeader>
         </template>
 
         <template #item-template="{ data }">
@@ -179,7 +150,7 @@
 
 
         </template>
-      </VPaginator> -->
+      </CardsView>
     </template>
   </Card>
 
@@ -217,26 +188,22 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import Rating from 'primevue/rating';
-import Menu from 'primevue/menu';
 import { useI18n } from 'vue-i18n';
 import Skeleton from 'primevue/skeleton';
 import Paginator from 'primevue/paginator';
-import CreateButton from './components/create/CreateButton.vue';
-import UpdateButton from './components/update/UpdateButton.vue';
 import { useQueryOfOne } from './composable/useQueryOfOne';
-import ViewButton from './components/view/ViewButton.vue';
 import UpdateDialog from './components/update/UpdateDialog.vue';
 import ViewDialog from './components/view/ViewDialog.vue';
 import CreateDialog from './components/create/CreateDialog.vue';
-import DeleteButton from './components/delete/DeleteButton.vue';
-import ActivateButton from './components/logic_delete/ActivateButton.vue';
-import DesactivateButton from './components/logic_delete/DesactivateButton.vue';
 import { Tag } from 'primevue';
 import LoadingPanel from '../ui/LoadingPanel.vue';
-import type TableProps from './types/TableProps';
+import CardsView from './components/CardsView.vue';
+import TableHeader from './components/TableHeader.vue';
+import type { TableProps } from './types/TableProps';
+import TableActions from './components/TableActions.vue';
 
 useQueryClient()
-const props = defineProps<TableProps>()
+const props = withDefaults(defineProps<TableProps>(), { showTotalCard: true })
 const { t } = useI18n(props.model.getLocales());
 
 const limit = ref(10)
@@ -248,6 +215,8 @@ const tableData = ref()
 const dataMode: Ref<'table' | 'cards'> = ref('table')
 
 const filters: Ref<object> = ref({});
+const globalFilter = ref('');
+
 
 props.model.getFilters()?.forEach((f) => {
   filters.value[f.field] = { value: null, matchMode: 'contains', filterMode: f.filterMode, filterField: f.filterField ? f.filterField : f.field }
@@ -262,17 +231,11 @@ const filterOptions = ref([
 const fieldAsID = props.model.getFieldAsID()
 const queryKey = props.model.constructor.name
 
-const menu = ref();
 const expandedRows = ref()
 
 const updateDialogVisible = ref(false)
 const viewDialogVisible = ref(false)
 const createDialogVisible = ref(false)
-
-
-provide('queryKey', queryKey)
-provide('model', props.model)
-provide('isFormDataLoading', props.isFormDataLoading)
 
 
 const onFilter = (event: { filters: { [s: string]: unknown; } | ArrayLike<unknown>; }) => {
@@ -308,9 +271,6 @@ const onFilter = (event: { filters: { [s: string]: unknown; } | ArrayLike<unknow
 
 
 
-const toggle = (value: MouseEvent) => {
-  menu.value.toggle(value);
-};
 const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery({
   queryKey: [queryKey],
   queryFn: () => {
@@ -324,6 +284,7 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
             offset: offset.value,
             ...props.queryOptions,
             where: { ...filtersForServer.value },
+            globalFilter: globalFilter.value
           }
         ) :
         props.model.getAllPaginated(
@@ -332,6 +293,7 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
             offset: offset.value,
             ...props.queryOptions,
             where: { ...filtersForServer.value },
+            globalFilter: globalFilter.value
           }
         )
     } else {
@@ -340,12 +302,14 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
           {
             ...props.queryOptions,
             where: { ...filtersForServer.value },
+            globalFilter: globalFilter.value
           }
         ) :
         props.model.getAll(
           {
             ...props.queryOptions,
             where: { ...filtersForServer.value },
+            globalFilter: globalFilter.value
           }
         )
     }
@@ -355,51 +319,25 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
 
 const { dataOfOne, isPendingOfOne, isErrorOfOne, refetchOfOne } = useQueryOfOne(queryKey, props.model, props.queryOptions, props.customGetOneFunction)
 
-
 const isLogicErase = props.model.getFieldAsActive() != ''
 
+provide('queryKey', queryKey)
+provide('tableProps', props)
+provide('isLogicErase', isLogicErase)
+provide('refetchOfOne', refetchOfOne)
+provide('globalFilter', globalFilter)
+provide('limit', limit)
+provide('offset', offset)
+provide('totalRecords', totalRecords)
+provide('totalPages', totalPages)
 
-const exportOptions = ref([
-  {
-    label: t('global.options'),
-    items: [
-      {
-        label: 'CSV',
-        icon: 'pi pi-file-excel',
-        command: () => dt.value.exportCSV()
-      }
-    ]
-  }
-]);
-
-
-
-
-// const parseData = (data) => {
-//     for (const key in data) {
-//         if (Object.prototype.hasOwnProperty.call(props.model, key)) {
-//             // if (key.includes('date'))
-//             //     props.queryOptions.model.value[key] = parseDate(data[key]);
-//             // else
-//             props.model.value[key] = data[key];
-//         }
-//     }
-// }
-
-// if (props.queryOptions.requestPDF) {
-//     exportOptions.value[0].items.push(
-//         {
-//             label: 'PDF',
-//             icon: 'pi pi-file-pdf',
-//             command: async () => await props.queryOptions.requestPDF()
-//         })
-// }
 
 
 watch(dataOfOne, (newValue) => {
   if (newValue)
     props.model.setData(newValue)
 })
+watch(globalFilter, () => refetch())
 
 watchEffect(() => {
   if (isSuccess.value && data.value && !isPending.value && !isRefetching.value) {
@@ -423,28 +361,6 @@ defineExpose({ refetch })
 .p-datatable-filter-constraint-dropdown {
   display: none !important;
 }
-
-.custom-table-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-}
-
-.custom-table-header__options {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.custom-table-actions {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-
-
 
 .dialog-form {
   display: flex;

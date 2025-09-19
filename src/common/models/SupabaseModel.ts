@@ -5,50 +5,59 @@ import { supabase } from "@/plugins/supabase-client";
 export class SupabaseModel extends BaseModel {
 
 
-  public getSavableData() {
-    const submitData = { ...this };
-    delete submitData[this.getFieldAsID()]
-    Object.keys(submitData).forEach((key) => {
-      if (Reflect.getMetadata("notSavableField", this, key)) {
-        delete submitData[key];
-      }
-    });
-    return submitData;
-  }
+  public async getAllPaginated(
+    params: {
+      offset: number,
+      limit: number,
+      relations: string[],
+      globalFilter?: string
+    }
+  ) {
+    const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : '';
 
+    const searchableFields = this.getSearchableFields();
 
-  public async getAllPaginated(params: { offset: number, limit: number, relations: string[] }) {
-    const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : ''
-    const { count: totalElements, error: countError } = await supabase
+    let query = supabase
       .from(this.getURL())
-      .select('*', { count: 'exact', head: true })
-    if (countError) throw countError
-    console.log(relations)
-    const { data, error } = await supabase
-      .from(this.getURL())
-      .select('*' + relations)
-      .range(params.offset, params.offset + params.limit - 1)
+      .select('*' + relations, { count: 'exact' });
 
-    if (error || totalElements == null) throw error
-    else {
-      const totalPages = Math.ceil(totalElements / params.limit)
-      return {
-        pages: totalPages,
-        actual_page: params.offset,
-        elements_amount: totalElements,
-        data: data || []
-      }
+    if (params.globalFilter && params.globalFilter.trim() !== '') {
+      const searchTerm = params.globalFilter.trim();
+      query = query.or(
+        searchableFields.map(field => `${field}.ilike.%${searchTerm}%`).join(',')
+      );
     }
 
+    const { count: totalElements, error: countError, data } = await query
+      .range(params.offset, params.offset + params.limit - 1);
+
+    if (countError) throw countError;
+
+    const totalPages = Math.ceil((totalElements || 0) / params.limit);
+
+    return {
+      pages: totalPages,
+      actual_page: Math.floor(params.offset / params.limit) + 1,
+      elements_amount: totalElements || 0,
+      data: data || []
+    };
   }
 
 
-  public async getAll(params: { relations?: string[] } = {}) {
+  public async getAll(params: { relations?: string[], globalFilter?: string } = {}) {
     const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : ''
-
-    const { data, error } = await supabase
+    let query = supabase
       .from(this.getURL())
-      .select('*' + relations)
+      .select('*' + relations, { count: 'exact' });
+    const searchableFields = this.getSearchableFields();
+
+    if (params.globalFilter && params.globalFilter.trim() !== '') {
+      const searchTerm = params.globalFilter.trim();
+      query = query.or(
+        searchableFields.map(field => `${field}.ilike.%${searchTerm}%`).join(',')
+      );
+    }
+    const { data, error } = await query.select()
 
     if (error) throw error
     else

@@ -1,19 +1,16 @@
 <template>
-
-
   <span>{{ t('animal.name') }}: {{ animal.name }}</span>
   <span>{{ t('animal.kingdom') }}: {{ animal.animal_kingdom.name }}</span>
-
-
-
 </template>
-<script setup lang="ts">
-import type { ModelRef } from 'vue';
+
+<script lang="ts" setup>
 import type { Animal } from '../../models/animal.model';
 import { useI18n } from 'vue-i18n';
 import { locales } from '../../locales/locales';
 
 const { t } = useI18n(locales)
 
-const animal = defineModel() as ModelRef<Animal>
+defineProps<{ animal: Animal }>()
 </script>
+
+<style></style>

@@ -1,7 +1,7 @@
 import type { BaseModel } from "@/common/models/BaseModel";
 import type { PaginatedResponseData, ResponseData } from "@/common/types/ResponseData";
 
-export default interface TableProps {
+export interface TableProps {
   title?: string;
   dialogsHeader?: string;
   model: BaseModel;
@@ -19,7 +19,9 @@ export default interface TableProps {
   hideUpdateButton?: boolean;
   hideCreateButton?: boolean;
   hideDeleteButton?: boolean;
+  showTotalCard?: boolean;
   internDatatable?: boolean;
+  gridClass?: string
 }
 interface QueryOptions {
   limit?: number;
@@ -28,7 +30,7 @@ interface QueryOptions {
   relations: unknown[]
 }
 
-interface ExtraOption {
+export interface ExtraOption {
   renderIf: (data: object) => boolean;
   tooltip: string;
   severity: string;

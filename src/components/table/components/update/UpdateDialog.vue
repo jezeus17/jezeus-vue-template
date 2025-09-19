@@ -1,8 +1,8 @@
 <template>
 
-  <Dialog v-model:visible="visible" modal :header="$t('global.update') + ' ' + header" class="w-fit min-w-[30rem]">
+  <Dialog v-model:visible="visible" modal :header="$t('global.update') + ' ' + header" class="w-full m-4 max-w-[35rem]">
     <span>{{ $t('table.update_element') }}</span>
-    <Form @submit="(values) => mutate(values)" :validation-schema="model?.getUpdateSchema()">
+    <Form @submit="(values) => mutate(values)" :validation-schema="tableProps.model.getUpdateSchema()">
       <div class="dialog-form">
         <slot name="form"></slot>
       </div>
@@ -16,13 +16,13 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { BaseModel } from '@/common/models/BaseModel';
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { Button, Dialog, useToast } from 'primevue';
 import { Form } from 'vee-validate';
 import { inject, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { TableProps } from '../../types/TableProps';
 
 const toast = useToast()
 const { t } = useI18n()
@@ -35,23 +35,23 @@ defineProps({
     required: true
   }
 })
-const visible = defineModel()
+const visible = defineModel() as Ref<boolean>
 const queryKey = inject<Ref<string>>('queryKey')
-const model = inject<BaseModel>('model')
+const tableProps = inject('tableProps') as TableProps
 const isFormDataLoading = inject<Ref<boolean>>('isFormDataLoading')
 
 
 
 const { mutate, isPending } = useMutation({
   mutationKey: [`${queryKey}-update`],
-  mutationFn: (data: object) => model.update(data),
+  mutationFn: (data: object) => tableProps.model.update(data),
   onSuccess: async () => {
     await queryClient.refetchQueries({
       queryKey: [queryKey]
     })
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
     visible.value = false
-    model?.clearData()
+    tableProps.model.clearData()
   },
   onError: (error) => {
     toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.statusCode == 404 ? t('table.relations_error') : t(error.message), life: 5000 });

@@ -61,11 +61,19 @@ export abstract class BaseModel {
   public getSavableData() {
     const submitData = { ...this };
     Object.keys(submitData).forEach((key) => {
-      if (Reflect.getMetadata("notSavableField", this, key)) {
+      if (Reflect.getMetadata("notSavableField", this, key) || Reflect.getMetadata("fieldAsID", this, key)) {
         delete submitData[key];
       }
     });
     return submitData;
+  }
+  public getSearchableFields() {
+    const submitData = { ...this };
+    return Object.keys(submitData).filter((key) => {
+      if (!Reflect.getMetadata("notSearchableField", this, key) && !Reflect.getMetadata("fieldAsID", this, key)) {
+        return key;
+      }
+    });
   }
 
   public getColumns() {
@@ -91,7 +99,7 @@ export abstract class BaseModel {
   abstract getAllPaginated(params?: object): Promise<PaginatedResponseData>
   abstract getOne(id: number | string, params?: object): Promise<object>
   abstract getSelf(params?: object): Promise<object>
-  abstract create(data?: object): void
-  abstract update(data?: object, id?: number | string): void
-  abstract delete(id?: number): void
+  abstract create(data?: object): Promise<unknown>
+  abstract update(data?: object, id?: number | string): Promise<unknown>
+  abstract delete(id?: number): Promise<unknown>
 }

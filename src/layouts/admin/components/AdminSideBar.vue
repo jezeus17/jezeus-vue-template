@@ -1,6 +1,6 @@
 <template>
 
-  <div class="card flex  justify-center h-screen ">
+  <div class="card flex  justify-center h-[100dvh] ">
 
 
     <Menu :model="items" class="h-full overflow-auto">

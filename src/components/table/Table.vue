@@ -106,18 +106,22 @@
             limit = e.rows
             refetch()
           }" :totalRecords="totalRecords" :rowsPerPageOptions="[1, 10, 20, 30]">
-            <!-- <template #start="slotProps">
-                            Mostrando {{ slotProps.state.rows > totalRecords ? totalRecords : slotProps.state.rows }} de
-                            {{
-                                totalRecords }} elementos
+            <template #end="slotProps">
+              <section class="flex flex-col ml-4">
+                <span v-if="data">
+                  {{ slotProps.state.first + 1 }} {{ t('to') }} {{ slotProps.state.first + 1 + limit >
+                    totalRecords ?
+                    totalRecords : slotProps.state.first + 1 + limit }}, {{ t('of') }}
+                  {{ totalRecords }}
 
-                            , Primer elemento: {{ slotProps.state.first + 1 }}
+                </span>
 
 
-                        </template>
-<template #end="slotProps">
-                            Página: {{ slotProps.state.page + 1 }} de {{ totalPages }}
-                        </template> -->
+              </section>
+
+
+
+            </template>
           </Paginator>
         </template>
       </DataTable>

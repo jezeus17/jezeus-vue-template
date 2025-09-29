@@ -1,12 +1,11 @@
 import { schema } from "../schemas/animal.schema";
 import { ID, NotSavable, NotSearchable } from "@/common/utils/Decorators";
 import { columns } from "./animal.columns";
-import { SupabaseModel } from "@/common/models/SupabaseModel";
-import type { AnimalKingdom } from "@/modules/management/animal_kingdom/models/animal_kingdom.model";
 import { locales } from "../locales/locales";
+import { BaseModel } from "@/common/models/base/BaseModel";
+import type { AnimalKingdomModel } from "../../animal_kingdom/models/animal_kingdom.model";
 
-
-export class Animal extends SupabaseModel {
+export class AnimalModel extends BaseModel {
   @ID
   id!: number;
   @NotSavable
@@ -17,8 +16,7 @@ export class Animal extends SupabaseModel {
   fk_animal_kingdom!: number
   @NotSavable
   @NotSearchable
-  animal_kingdom!: AnimalKingdom
-  static readonly url: string = "animal";
+  animal_kingdom!: AnimalKingdomModel
   static readonly columns = columns;
   static readonly locales = locales;
   static readonly schema = schema;

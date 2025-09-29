@@ -7,30 +7,39 @@
 
 <script lang="ts" setup>
 import { useQuery } from '@tanstack/vue-query';
-import { BaseModel } from '@/common/models/BaseModel';
 import { ref } from 'vue';
 import VSelect from './VSelect.vue';
 import type { ResponseData } from '@/common/types/ResponseData';
-const props = defineProps({
-  label: { type: String },
-  name: { type: String, required: true },
-  optionId: { type: String, default: 'id' },
-  externLoading: { type: Boolean },
-  multi: { type: Boolean },
-  showClear: { type: Boolean, default: true },
-  queryModel: { type: BaseModel, required: true },
+import type { BaseService } from '@/common/models/base/BaseService';
+import type { BaseModel } from '@/common/models/base/BaseModel';
 
-});
+type ServerSelectProps = {
+  label: string,
+  name: string,
+  optionId: string,
+  externLoading?: boolean,
+  multi?: boolean,
+  showClear?: boolean,
+  service: BaseService<BaseModel>,
+}
+
+
+
+const props = withDefaults(defineProps<ServerSelectProps>(), { optionId: 'id', showClear: true });
 const model = defineModel();
 
 const { data, isPending, isRefetching } =
   useQuery({
-    queryKey: [props.queryModel.getURL()],
+    queryKey: [props.service.getModel().url],
     queryFn: async () => {
-      const data: ResponseData = await props.queryModel.getAll()
+      const data: ResponseData = await props.service.getAll()
+      console.log(data)
+      console.log(props.service.getModel())
       if (model.value) {
-        defaultValue.value = data.data.find((element) => element[props.queryModel.getFieldAsID()] == model.value)
+
+        defaultValue.value = data.data.find((element) => element[props.service.getModel().getFieldAsID()] == model.value)
       }
+      console.log(data)
       return data
     }
   })

@@ -1,4 +1,4 @@
-import type { BaseModel } from "@/common/models/BaseModel";
+import type { BaseModel } from "@/common/models/base/BaseModel";
 
 export default interface ColumnProps {
   field: string,
@@ -11,6 +11,7 @@ export default interface ColumnProps {
   visibleDeleteFunction?: (data: BaseModel) => boolean,
   fieldGetter?: (data: BaseModel) => unknown,
   filter?: boolean,
+  sortable?: boolean,
   customFilterTemplate?: string,
   filterMode?: string,
 

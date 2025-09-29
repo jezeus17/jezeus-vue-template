@@ -1,6 +1,6 @@
 <template>
   <Button icon="pi pi-pencil" severity="primary" variant="text" rounded aria-label="Pencil"
-    v-tooltip="$t('global.update')" @click="action($event)" />
+    v-tooltip="$t('global.update')" @click="action" />
 </template>
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
@@ -25,8 +25,8 @@ const props = defineProps({
 
 const emit = defineEmits(['show-update-dialog'])
 
-const action = async (event) => {
-  tableProps.model.setData(props.dataToUpdate)
+const action = async () => {
+  tableProps.service.getModel().setData(props.dataToUpdate)
   await queryClient.refetchQueries({
     queryKey: [queryKey + '-one']
   })
@@ -34,7 +34,7 @@ const action = async (event) => {
 
 
   if (props.customFunction)
-    props.customFunction(tableProps.model.getID())
+    props.customFunction(tableProps.service.getModel().getID())
   else emit('show-update-dialog')
 }
 

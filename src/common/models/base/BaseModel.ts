@@ -1,18 +1,19 @@
-import { object, Schema } from "yup";
+import { object } from "yup";
 import "reflect-metadata";
 import type ColumnProps from "@/components/table/types/ColumnProps";
-import type { PaginatedResponseData, ResponseData } from "../types/ResponseData";
 
-export abstract class BaseModel {
+export class BaseModel {
   [key: string]: unknown;
-  static readonly url: string = "base";
   static readonly locales: object = {};
   static readonly columns: Array<ColumnProps> | null = null;
-  static readonly schema: Schema = object();
+  static readonly schema = object();
 
   constructor(data?: object) {
     if (data) this.setData(data);
   }
+
+
+
 
   public setData(data: object): void {
     Object.assign(this, data);
@@ -35,9 +36,6 @@ export abstract class BaseModel {
     return (this.constructor as typeof BaseModel).locales;
   }
 
-  public getURL() {
-    return (this.constructor as typeof BaseModel).url;
-  }
 
   public getFieldAsID() {
     const properties = Object.getOwnPropertyNames(this);
@@ -75,6 +73,17 @@ export abstract class BaseModel {
       }
     });
   }
+  public getUniqueFields() {
+    const submitData = { ...this };
+    return Object.keys(submitData).filter((key) => {
+      if (Reflect.getMetadata("uniqueField", this, key)) {
+        return key;
+      }
+    });
+  }
+  public isUniqueField(key: string) {
+    return Reflect.getMetadata("uniqueField", this, key)
+  }
 
   public getColumns() {
     return (this.constructor as typeof BaseModel).columns;
@@ -95,11 +104,4 @@ export abstract class BaseModel {
     return this.getSchema();
   }
 
-  abstract getAll(params: object): Promise<ResponseData>
-  abstract getAllPaginated(params?: object): Promise<PaginatedResponseData>
-  abstract getOne(id: number | string, params?: object): Promise<object>
-  abstract getSelf(params?: object): Promise<object>
-  abstract create(data?: object): Promise<unknown>
-  abstract update(data?: object, id?: number | string): Promise<unknown>
-  abstract delete(id?: number): Promise<unknown>
 }

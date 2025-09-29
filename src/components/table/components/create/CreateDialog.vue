@@ -3,7 +3,7 @@
   <Dialog v-model:visible="visible" modal :header="$t('global.add') + ' ' + header" class="w-full m-4 max-w-[35rem]">
 
     <span>{{ $t('table.new_element') }}</span>
-    <Form @submit="() => mutate()" :validation-schema="tableProps.model.getSchema()">
+    <Form @submit="() => mutate()" :validation-schema="tableProps.service.getSchema()">
       <div class="dialog-form">
         <slot name="form"></slot>
       </div>
@@ -49,14 +49,14 @@ const isFormDataLoading = inject<Ref<boolean>>('isFormDataLoading')
 
 const { mutate, isPending } = useMutation({
   mutationKey: [`${queryKey}-add`],
-  mutationFn: () => tableProps.model.create(),
+  mutationFn: () => tableProps.service.create(),
   onSuccess: async () => {
     await queryClient.refetchQueries({
       queryKey: [queryKey]
     })
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_added'), life: 5000 });
     visible.value = false
-    tableProps.model?.clearData()
+    tableProps.service.getModel().clearData()
   },
   onError: (error) => {
     toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t(error.message), life: 5000 });

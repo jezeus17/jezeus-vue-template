@@ -1,8 +1,9 @@
-import type { BaseModel } from "@/common/models/BaseModel";
+import type { BaseModel } from "@/common/models/base/BaseModel";
+import type { BaseService } from "@/common/models/base/BaseService";
 import type { PaginatedResponseData } from "@/common/types/ResponseData";
 
-export default interface CardsViewProps {
-  model: BaseModel,
+export default interface CardsViewProps<T extends BaseModel> {
+  service: BaseService<T>,
   refetch: () => Promise<unknown>,
   data: PaginatedResponseData,
   paginationOptions: Array<number>,

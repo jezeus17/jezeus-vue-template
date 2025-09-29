@@ -1,12 +1,12 @@
 <template>
   <div class="custom-table-actions">
     <ViewButton :data-to-show="data" v-if="!tableProps.hideViewButton &&
-      (isLogicErase ? data[tableProps.model.getFieldAsActive()] == true : true)
+      (isLogicErase ? data[tableProps.service.getModel().getFieldAsActive()] == true : true)
       && (column.visibleViewFunction ? column.visibleViewFunction(data) : true)" :refetch="refetchOfOne"
       @show-view-dialog="$emit('show-view-dialog')" />
 
     <UpdateButton :data-to-update="data" v-if="!tableProps.hideUpdateButton &&
-      (isLogicErase ? data[tableProps.model.getFieldAsActive()] == true : true)
+      (isLogicErase ? data[tableProps.service.getModel().getFieldAsActive()] == true : true)
       && (column.visibleUpdateFunction ? column.visibleUpdateFunction(data) : true)"
       @show-update-dialog="$emit('show-update-dialog')" :custom-function="tableProps.customUpdateFunction" />
     <template
@@ -14,7 +14,8 @@
 
       <DeleteButton :data-to-delete="data" v-if="!isLogicErase" />
 
-      <ActivateButton :data-to-activate="data" v-else-if="data[tableProps.model.getFieldAsActive()] == false" />
+      <ActivateButton :data-to-activate="data"
+        v-else-if="data[tableProps.service.getModel().getFieldAsActive()] == false" />
       <DesactivateButton :data-to-desactivate="data" v-else />
     </template>
     <template v-if="tableProps.extraOptions">
@@ -37,7 +38,7 @@ import UpdateButton from './update/UpdateButton.vue';
 import ViewButton from './view/ViewButton.vue';
 import type { TableProps } from '../types/TableProps';
 import type ColumnProps from '../types/ColumnProps';
-import type { BaseModel } from '@/common/models/BaseModel';
+import type { BaseModel } from '@/common/models/base/BaseModel';
 import { Button } from 'primevue';
 
 const tableProps = inject('tableProps') as TableProps

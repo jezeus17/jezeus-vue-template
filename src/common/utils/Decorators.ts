@@ -11,3 +11,6 @@ export function NotSavable(target: object, propertyKey: string) {
 export function NotSearchable(target: object, propertyKey: string) {
   Reflect.defineMetadata("notSearchableField", true, target, propertyKey);
 }
+export function Unique(target: object, propertyKey: string) {
+  Reflect.defineMetadata("uniqueField", true, target, propertyKey);
+}

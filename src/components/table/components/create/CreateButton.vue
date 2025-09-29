@@ -21,7 +21,7 @@ const action = () => {
   if (props.customFunction)
     props.customFunction()
   else emit('show-create-dialog')
-  tableProps.model.clearData()
+  tableProps.service.getModel().clearData()
 }
 
 

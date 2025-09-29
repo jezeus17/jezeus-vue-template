@@ -5,7 +5,8 @@
 
       <DataTable v-if="dataMode == 'table'" :class="internDatatable ? 'intern-datatable' : ''"
         v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true" @filter="onFilter"
-        filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData" :rows="5">
+        @sort="onSortChange" filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData"
+        :rows="5">
 
 
         <template #header>
@@ -23,10 +24,10 @@
           </TableHeader>
         </template>
         <Column expander v-if="hasExpander" style="width: 1rem" />
-        <template v-for="(col, index) in props.model.getColumns()" :key="index">
+        <template v-for="(col, index) in props.service.getModel().getColumns()" :key="index">
 
           <Column v-if="!col.isActionsColumn" :filterField="col.field" :field="col.field"
-            :header="t(col.header as string)" :filterMatchModeOptions="filterOptions">
+            :header="t(col.header as string)" :filterMatchModeOptions="filterOptions" :sortable="col.sortable">
 
 
             <template #body="slotProps">
@@ -43,7 +44,7 @@
               </template>
               <template v-else>
                 <Rating v-if="col.isRating" :modelValue="slotProps.data[col.field]" readonly />
-                <template v-else-if="col.isBoolean || col.field === props.model.getFieldAsActive()">
+                <template v-else-if="col.isBoolean || col.field === props.service.getModel().getFieldAsActive()">
                   <Tag v-if="slotProps.data[col.field] == true" severity="success" :value="$t('global.yes')" />
                   <Tag v-else severity="danger" :value="$t('global.no')" />
 
@@ -126,7 +127,7 @@
         </template>
       </DataTable>
 
-      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :model :data="data?.data" :refetch
+      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :service :data="data?.data" :refetch
         :is-pending="isPending || isRefetching" :query-options="{
           limit: limit,
           offset: offset,
@@ -166,7 +167,7 @@
 
   <ViewDialog :header="dialogsHeader ?? t('header')" v-model="viewDialogVisible">
     <template #view-element>
-      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :model :refetch></slot>
+      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :service :refetch></slot>
     </template>
   </ViewDialog>
 
@@ -184,7 +185,7 @@
 <script setup lang="ts">
 import Column from 'primevue/column';
 import Card from 'primevue/card';
-import DataTable from 'primevue/datatable';
+import DataTable, { type DataTableSortEvent } from 'primevue/datatable';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import { provide, ref, watch, watchEffect, type Ref } from 'vue';
@@ -208,7 +209,7 @@ import TableActions from './components/TableActions.vue';
 
 useQueryClient()
 const props = withDefaults(defineProps<TableProps>(), { showTotalCard: true })
-const { t } = useI18n(props.model.getLocales());
+const { t } = useI18n(props.service.getModel().getLocales());
 
 const limit = ref(10)
 const offset = ref(0)
@@ -222,7 +223,7 @@ const filters: Ref<object> = ref({});
 const globalFilter = ref('');
 
 
-props.model.getFilters()?.forEach((f) => {
+props.service.getModel().getFilters()?.forEach((f) => {
   filters.value[f.field] = { value: null, matchMode: 'contains', filterMode: f.filterMode, filterField: f.filterField ? f.filterField : f.field }
 
 })
@@ -232,15 +233,25 @@ const filterOptions = ref([
   { label: 'Contains', value: 'contains' }
 ])
 
-const fieldAsID = props.model.getFieldAsID()
-const queryKey = props.model.constructor.name
+const fieldAsID = props.service.getModel().getFieldAsID()
+const queryKey = props.service.getModel().constructor.name
 
 const expandedRows = ref()
+const sortOptions = ref({ column: '', direction: 'asc' })
 
 const updateDialogVisible = ref(false)
 const viewDialogVisible = ref(false)
 const createDialogVisible = ref(false)
 
+
+const onSortChange = (e: DataTableSortEvent) => {
+  if (typeof e.sortField == 'string') {
+    sortOptions.value.column = e.sortField
+    sortOptions.value.direction = e.sortOrder === 1 ? 'asc' : 'desc'
+    refetch()
+  }
+
+}
 
 const onFilter = (event: { filters: { [s: string]: unknown; } | ArrayLike<unknown>; }) => {
   filtersForServer.value = {}
@@ -288,16 +299,18 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
             offset: offset.value,
             ...props.queryOptions,
             where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value
+            globalFilter: globalFilter.value,
+            orderBy: sortOptions.value
           }
         ) :
-        props.model.getAllPaginated(
+        props.service.getAllPaginated(
           {
             limit: limit.value,
             offset: offset.value,
             ...props.queryOptions,
             where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value
+            globalFilter: globalFilter.value,
+            orderBy: sortOptions.value
           }
         )
     } else {
@@ -306,14 +319,16 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
           {
             ...props.queryOptions,
             where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value
+            globalFilter: globalFilter.value,
+            orderBy: sortOptions.value
           }
         ) :
-        props.model.getAll(
+        props.service.getAll(
           {
             ...props.queryOptions,
             where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value
+            globalFilter: globalFilter.value,
+            orderBy: sortOptions.value
           }
         )
     }
@@ -321,9 +336,9 @@ const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery(
 
 })
 
-const { dataOfOne, isPendingOfOne, isErrorOfOne, refetchOfOne } = useQueryOfOne(queryKey, props.model, props.queryOptions, props.customGetOneFunction)
+const { dataOfOne, isPendingOfOne, isErrorOfOne, refetchOfOne } = useQueryOfOne(queryKey, props.service, props.queryOptions, props.customGetOneFunction)
 
-const isLogicErase = props.model.getFieldAsActive() != ''
+const isLogicErase = props.service.getModel().getFieldAsActive() != ''
 
 provide('queryKey', queryKey)
 provide('tableProps', props)
@@ -339,7 +354,7 @@ provide('totalPages', totalPages)
 
 watch(dataOfOne, (newValue) => {
   if (newValue)
-    props.model.setData(newValue)
+    props.service.getModel().setData(newValue)
 })
 watch(globalFilter, () => refetch())
 

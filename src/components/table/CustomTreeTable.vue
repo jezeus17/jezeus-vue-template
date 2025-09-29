@@ -60,7 +60,7 @@
                 <Rating v-if="col.isRating" :modelValue="slotProps.data[col.fieldGetter(slotProps.data)]" readonly />
                 <template v-else-if="col.isBoolean">{{
                   col.fieldGetter(slotProps.data) == true ? t('global.yes') : t('global.no')
-                  }}</template>
+                }}</template>
                 <template v-else-if="col.fieldGetter(slotProps.data) !== undefined">
                   {{ col.fieldGetter(slotProps.data) }}</template>
                 <template v-else>-</template>
@@ -176,7 +176,7 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import Rating from 'primevue/rating';
 import Menu from 'primevue/menu';
 import { useI18n } from 'vue-i18n';
-import { BaseModel } from '@/common/models/BaseModel';
+import { BaseModel } from '@/common/models/base/BaseModel';
 import Skeleton from 'primevue/skeleton';
 import CreateButton from './components/create/CreateButton.vue';
 import UpdateButton from './components/update/UpdateButton.vue';

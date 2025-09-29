@@ -19,7 +19,7 @@
 
 </template>
 <script setup lang="ts">
-import { BaseModel } from '@/common/models/BaseModel';
+import { BaseModel } from '@/common/models/base/BaseModel';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { Form } from 'vee-validate';

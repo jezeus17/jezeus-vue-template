@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Card, Paginator, SelectButton } from 'primevue';
+import { Card, Paginator } from 'primevue';
 import Button from 'primevue/button';
 
 import Skeleton from 'primevue/skeleton';
-import { inject, ref } from 'vue';
+import { inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type CardsViewProps from '../types/CardsViewProps';
 import TableActions from './TableActions.vue';
@@ -24,44 +24,14 @@ const props = withDefaults(defineProps<CardsViewProps>(), {
 })
 const emit = defineEmits(['update-start-index', 'update-pagination-size', 'show-update-dialog', 'show-view-dialog'])
 
-const filters = ref({})
 
 const totalRecords = inject('totalRecords') as number
 const offset = inject('offset') as number
 const limit = inject('limit') as number
 
 
-const actionColumn = props.model.getColumns()?.filter(c => c.isActionsColumn)[0]
+const actionColumn = props.service.getModel().getColumns()?.filter(c => c.isActionsColumn)[0]
 
-
-
-const value = ref(null);
-
-// const onFilterOptions = (event) => {
-
-//   filters.value = { name: 'Belbin' }
-
-//   onFilter()
-
-// }
-// const onFilter = (e) => {
-
-//   // Object.entries(event.filters).map((f) => {
-//   //     if (f[1].value !== null && f[1].value !== undefined) {
-//   //         switch (f[1].filterMode) {
-//   //             case 'like':
-//   //                 filtersForServer.value[f[1].filterField] = `like %${f[1].value}%`
-//   //                 break;
-//   //             case '=':
-//   //                 filtersForServer.value[f[1].filterField] = f[1].value
-//   //                 break;
-//   //         }
-
-//   //     }
-
-//   // })
-//   props.refetch()
-// }
 
 
 

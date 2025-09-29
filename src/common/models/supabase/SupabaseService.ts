@@ -1,8 +1,9 @@
 import "reflect-metadata";
-import { BaseModel } from "./BaseModel";
+import { BaseModel } from "../base/BaseModel";
 import { supabase } from "@/plugins/supabase-client";
+import { BaseService } from "../base/BaseService";
 
-export class SupabaseModel extends BaseModel {
+export class SupabaseService<T extends BaseModel> extends BaseService<T> {
 
 
   public async getAllPaginated(
@@ -10,15 +11,20 @@ export class SupabaseModel extends BaseModel {
       offset: number,
       limit: number,
       relations: string[],
-      globalFilter?: string
+      globalFilter?: string,
+      orderBy?: {
+        column: string,
+        direction: 'asc' | 'desc'
+      }
     }
   ) {
+    console.log(params)
     const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : '';
 
-    const searchableFields = this.getSearchableFields();
+    const searchableFields = this.modelInstance.getSearchableFields();
 
     let query = supabase
-      .from(this.getURL())
+      .from(this.url)
       .select('*' + relations, { count: 'exact' });
 
     if (params.globalFilter && params.globalFilter.trim() !== '') {
@@ -26,6 +32,12 @@ export class SupabaseModel extends BaseModel {
       query = query.or(
         searchableFields.map(field => `${field}.ilike.%${searchTerm}%`).join(',')
       );
+    }
+
+    if (params.orderBy && params.orderBy.column.trim() !== '') {
+      query = query.order(params.orderBy.column, {
+        ascending: params.orderBy?.direction === 'asc'
+      });
     }
 
     const { count: totalElements, error: countError, data } = await query
@@ -44,18 +56,28 @@ export class SupabaseModel extends BaseModel {
   }
 
 
-  public async getAll(params: { relations?: string[], globalFilter?: string } = {}) {
+  public async getAll(params: {
+    relations?: string[], globalFilter?: string, orderBy?: {
+      column: string,
+      direction: 'asc' | 'desc'
+    }
+  } = {}) {
     const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : ''
     let query = supabase
-      .from(this.getURL())
+      .from(this.url)
       .select('*' + relations, { count: 'exact' });
-    const searchableFields = this.getSearchableFields();
+    const searchableFields = this.modelInstance.getSearchableFields();
 
     if (params.globalFilter && params.globalFilter.trim() !== '') {
       const searchTerm = params.globalFilter.trim();
       query = query.or(
         searchableFields.map(field => `${field}.ilike.%${searchTerm}%`).join(',')
       );
+    }
+    if (params.orderBy && params.orderBy?.column.trim() !== '') {
+      query = query.order(params.orderBy.column, {
+        ascending: params.orderBy?.direction === 'asc'
+      });
     }
     const { data, error } = await query.select()
 
@@ -69,19 +91,19 @@ export class SupabaseModel extends BaseModel {
   public async getOne(id: number | string, params: { relations?: string[] } = {}) {
     const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : ''
     const { data: responseData, error } = await supabase
-      .from(this.getURL())
+      .from(this.url)
       .select('*' + relations)
-      .eq(this.getFieldAsID(), id)
-
+      .eq(this.modelInstance.getFieldAsID(), id)
+    console.log(responseData)
     if (error) throw error
     else return responseData
   }
   public async getSelf(params: { relations?: string[] } = {}) {
     const relations = params.relations ? ' ,' + (params.relations.map(relation => `${relation}:${relation} (*)`).join(',')) : ''
     const { data: responseData, error } = await supabase
-      .from(this.getURL())
+      .from(this.url)
       .select('*' + relations)
-      .eq(this.getFieldAsID(), this.getID())
+      .eq(this.modelInstance.getFieldAsID(), this.modelInstance.getID())
 
     if (error) throw error
     else return responseData
@@ -96,9 +118,9 @@ export class SupabaseModel extends BaseModel {
 
   async create(submitData?: object) {
 
-    const data = submitData ?? this.getSavableData()
+    const data = submitData ?? this.modelInstance.getSavableData()
     const { data: responseData, error } = await supabase
-      .from(this.getURL())
+      .from(this.url)
       .insert([data])
 
     if (error) throw error
@@ -107,24 +129,35 @@ export class SupabaseModel extends BaseModel {
 
   async update(submitData?: object, id?: number | string) {
 
-    const data = submitData ?? this.getSavableData()
-    const recordId = id ?? this.getID()
+    const data = submitData ?? this.modelInstance.getSavableData()
+    const recordId = id ?? this.modelInstance.getID()
     const { data: responseData, error } = await supabase
-      .from(this.getURL())
+      .from(this.url)
       .update([data])
-      .eq(this.getFieldAsID(), recordId)
+      .eq(this.modelInstance.getFieldAsID(), recordId)
     if (error) throw error
     else return responseData
   }
 
   async delete(id?: number) {
-    const recordId = id ?? this.getID()
+    const recordId = id ?? this.modelInstance.getID()
     const { data: responseData, error } = await supabase
-      .from(this.getURL())
+      .from(this.url)
       .delete()
-      .eq(this.getFieldAsID(), recordId)
+      .eq(this.modelInstance.getFieldAsID(), recordId)
 
     if (error) throw error
     else return responseData
+  }
+
+  async validateField(field: string, value: unknown) {
+    const { data, error } = await supabase
+      .from(this.url)
+      .select(this.modelInstance.getFieldAsID())
+      .eq(field, value)
+      .limit(1)
+    if (error) throw error
+    const possibleEqualRow = data[0]
+    return !possibleEqualRow || possibleEqualRow[this.modelInstance.getFieldAsID()] === this.modelInstance.getID()
   }
 }

@@ -6,7 +6,7 @@
       :loading="isPendingOfOne || isRefetchingOfOne" :error="isErrorOfOne" :refetch="refetchOfOne" />
 
     <div v-else-if="isSuccessOfOne" class="dialog-form">
-      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :model="tableProps.model"></slot>
+      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :service="tableProps.service"></slot>
       <div class="flex justify-end gap-2">
         <Button type="button" :label="$t('global.confirm')" @click="visible = false"></Button>
       </div>
@@ -34,7 +34,7 @@ const queryKey = inject('queryKey') as string
 const tableProps = inject('tableProps') as TableProps
 
 
-const { dataOfOne, isErrorOfOne, isPendingOfOne, isRefetchingOfOne, isSuccessOfOne, refetchOfOne } = useQueryOfOne(queryKey, tableProps.model, {})
+const { dataOfOne, isErrorOfOne, isPendingOfOne, isRefetchingOfOne, isSuccessOfOne, refetchOfOne } = useQueryOfOne(queryKey, tableProps.service, {})
 
 
 

@@ -7,11 +7,11 @@
 </template>
 <script setup lang="ts">
 import type { ModelRef } from 'vue';
-import type { AnimalKingdom } from '../../models/animal_kingdom.model';
+import type { AnimalKingdomModel } from '../../models/animal_kingdom.model';
 import { useI18n } from 'vue-i18n';
 import { locales } from '../../locales/locales';
 
 const { t } = useI18n(locales)
 
-const kingdom = defineModel() as ModelRef<AnimalKingdom>
+const kingdom = defineModel() as ModelRef<AnimalKingdomModel>
 </script>

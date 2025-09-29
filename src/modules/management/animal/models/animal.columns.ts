@@ -1,18 +1,19 @@
 import type ColumnProps from "@/components/table/types/ColumnProps";
-import type { Animal } from "./animal.model";
+import type { AnimalKingdomModel } from "../../animal_kingdom/models/animal_kingdom.model";
 
 export const columns: ColumnProps[] = [
 
   {
     field: "name",
     header: "animal.name",
-    filter: false
+    filter: false,
+    sortable: true
   },
   {
     field: "fk_animal_kingdom",
-    fieldGetter: (animal) => (animal.animal_kingdom as Animal).name,
+    fieldGetter: (animal) => (animal.animal_kingdom as AnimalKingdomModel).name,
     header: "animal.kingdom",
-    filter: false
+    filter: false,
   },
 
   {

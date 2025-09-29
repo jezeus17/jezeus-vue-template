@@ -56,7 +56,6 @@
     "information": "Detalles",
     "view_information": "Ver Detalles",
     "retire": "Retirar",
-
     "new_element": "Inserte los datos del nuevo elemento",
     "update_element": "Inserte los datos del elemento a actualizar",
     "assign": "Asignar",
@@ -68,14 +67,14 @@
     "operation_failed": "Operación fallida",
     "operation_succeded": "Operación completada correctamente",
     "related_element": "No se puede eliminar este elemento porque está actualmente en uso por otros recursos del sistema. Por favor, desasócialo primero antes de proceder con la eliminación.",
-    "empty": "El campo no puede estar vacío",
+    "empty": "El campo es requerido",
     "min_greater_than_max": "El valor mínimo no puede ser mayor que el máximo",
     "max_less_than_min": "El valor máximo no puede ser menor que el mínimo",
     "field_too_short": "El valor debe ser al menos {min}",
     "field_too_big": "El valor debe ser como máximo {max}",
+    "unique": "El valor introducido ya existe, inserte uno diferente",
     "email": "El dato introducido no es un correo",
     "existent_email": "El email introducido ya existe",
-
     "ci": "El carnet no es correcto",
     "ci_date": "La fecha no es correcta",
     "existent_ci": "Este carnet ya existe",
@@ -86,15 +85,14 @@
     "file_size": "El archivo debe ser menor a 1MB"
   },
   "errors": {
-    "title": "Ha ocurrido un error...",
-    "button": "Volver",
     "403": "Usted no está autorizado",
-    "404": "Esta página no existe"
+    "404": "Esta página no existe",
+    "title": "Ha ocurrido un error...",
+    "button": "Volver"
   },
   "roles": {
     "Admin": "Administrador"
   },
-
   "navbar": {
     "info": {
       "name": "Sobre Nosotros"
@@ -105,7 +103,6 @@
       "user": "Usuario",
       "close-session": "Cerrar Sesión",
       "change_password": "Cambiar Contraseña",
-
       "dialogs": {
         "header": "Salir",
         "message": "¿Desea cerrar sesión?"

@@ -4,7 +4,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 
       <Card v-if="tableProps.showTotalCard"
-        class="border overflow-x-auto border-solid border-[var(--p-menubar-border-color)]">
+        class="border overflow-x-auto overflow-y-hidden border-solid border-[var(--p-menubar-border-color)]">
 
         <template #content>
           <div class="flex items-center gap-4">
@@ -59,7 +59,7 @@ import CreateButton from './create/CreateButton.vue';
 import type { TableProps } from '../types/TableProps';
 const tableProps = inject('tableProps') as TableProps
 const props = defineProps<TableHeaderProps>()
-const { t } = useI18n(tableProps.model.getLocales());
+const { t } = useI18n(tableProps.service.getModel().getLocales());
 const emit = defineEmits(['change-mode', 'open-create-dialog'])
 const globalFilter = inject('globalFilter') as Ref<string>
 

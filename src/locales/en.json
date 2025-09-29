@@ -66,12 +66,13 @@
     "error": "Error",
     "operation_failed": "Operation failed",
     "operation_succeded": "Operation completed successfully",
-    "empty": "Field cannot be empty",
+    "empty": "Field is required",
     "min_greater_than_max": "Minimum value cannot be greater than maximum",
     "max_less_than_min": "Maximum value cannot be less than minimum",
     "field_too_short": "Value must be at least {min}",
     "field_too_big": "Value must be at most {max}",
     "email": "The entered data is not a valid email",
+    "unique": "The inserted value exists already, insert a different one",
     "existent_email": "The email already exists",
     "ci": "The ID is not correct",
     "ci_date": "The date is not correct",
@@ -84,15 +85,14 @@
     "related_element": "This element cannot be deleted because it's currently being used by other system resources. Please disassociate it first before proceeding with deletion."
   },
   "errors": {
-    "title": "An error has occurred...",
-    "button": "Go back",
     "403": "You are not authorized",
-    "404": "This page does not exist"
+    "404": "This page does not exist",
+    "title": "An error has occurred...",
+    "button": "Go back"
   },
   "roles": {
     "Admin": "Administrator"
   },
-
   "navbar": {
     "info": {
       "name": "About Us"

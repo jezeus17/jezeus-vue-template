@@ -1,8 +1,5 @@
 <template>
-  <TableServerPagination ref="table" :model="kingdom">
-
-
-
+  <Table ref="table" paginate :service="kingdomService">
     <template #view-element>
       <ViewAnimalKingdom v-model="kingdom" />
     </template>
@@ -13,17 +10,18 @@
       <UpdateAnimalKingdom v-model="kingdom" />
     </template>
 
-  </TableServerPagination>
+  </Table>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import TableServerPagination from "@/components/table/Table.vue";
+import Table from "@/components/table/CustomTable.vue";
 import ViewAnimalKingdom from "./components/ViewAnimalKingdom.vue";
 import CreateAnimalKingdom from "./components/CreateAnimalKingdom.vue";
 import UpdateAnimalKingdom from "./components/UpdateAnimalKingdom.vue";
-import { AnimalKingdom } from "../models/animal_kingdom.model";
+import { AnimalKingdomModel } from "../models/animal_kingdom.model";
+import { AnimalKingdomService } from "../services/animal_kingdom.service";
 const table = ref()
-const kingdom = ref(new AnimalKingdom())
+const kingdom = ref(new AnimalKingdomModel())
 
-
+const kingdomService = ref(new AnimalKingdomService(kingdom.value))
 </script>

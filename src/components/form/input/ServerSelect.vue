@@ -1,7 +1,6 @@
 <template>
   <VSelect v-bind="{ ...$attrs }" :loading="isPending || isRefetching || externLoading" v-model="modelValue"
     :defaultValue :name :label :optionId :options="data?.data" />
-  {{ modelValue }}
 
 
 </template>
@@ -33,13 +32,9 @@ const { data, isPending, isRefetching } =
     queryKey: [props.model.url],
     queryFn: async () => {
       const data: ResponseData = await props.model.getAll()
-      console.log(data)
-      console.log(props.model)
       if (modelValue.value) {
-
         defaultValue.value = data.data.find((element) => element[props.model.getFieldAsID()] == modelValue.value)
       }
-      console.log(data)
       return data
     }
   })

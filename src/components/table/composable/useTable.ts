@@ -7,7 +7,6 @@ import type { DataTableFilterMeta } from "primevue";
 export const useTable = <T extends BaseModel>({ queryOptions, model, customGetAllFunction, paginate }: TableProps<T>) => {
   const tableData = ref()
   const expandedRows = ref()
-  const queryKey = model.constructor.name
   const dataMode: Ref<'table' | 'cards'> = ref('table')
   const filters: Ref<DataTableFilterMeta> = ref({});
   const filterOptions = ref([
@@ -19,7 +18,6 @@ export const useTable = <T extends BaseModel>({ queryOptions, model, customGetAl
   })
 
   const queryOfAll = useQueryOfAll({
-    queryKey,
     queryOptions,
     model,
     customGetAllFunction,
@@ -35,7 +33,6 @@ export const useTable = <T extends BaseModel>({ queryOptions, model, customGetAl
   });
 
   return {
-    queryKey,
     tableData,
     expandedRows,
     dataMode,

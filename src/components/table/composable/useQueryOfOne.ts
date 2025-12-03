@@ -1,13 +1,14 @@
 import type { BaseModel } from "@/common/models/base/BaseModel";
-import type { BaseService } from "@/common/models/base/BaseService";
 import { useQuery } from "@tanstack/vue-query";
+import { watch } from "vue";
 
-export const useQueryOfOne = (
-  queryKey: string,
-  service: BaseService<BaseModel>,
+export const useQueryOfOne = ({ queryOptions, customGetOneFunction, model }: {
+  model: BaseModel,
   queryOptions?: object,
-  customFunction?: (id: number, queryOptions?: object) => Promise<object>
-) => {
+  customGetOneFunction?: (id: number, queryOptions?: object) => Promise<object>
+}) => {
+  const queryKeyOfOne = `${model.constructor.name}-one`
+
   const {
     data: dataOfOne,
     isPending: isPendingOfOne,
@@ -17,11 +18,17 @@ export const useQueryOfOne = (
     isRefetching: isRefetchingOfOne,
     refetch: refetchOfOne,
   } = useQuery({
-    queryKey: [queryKey + "-one"],
-    queryFn: () => customFunction ? customFunction(service.getModel().getID() as number, queryOptions) : service.getSelf(queryOptions),
-    enabled: false,
+    queryKey: [queryKeyOfOne],
+    queryFn: () => customGetOneFunction ? customGetOneFunction(model.getID() as number, queryOptions) : model.getSelf(queryOptions),
+    enabled: false
   });
+
+  watch(dataOfOne, (newValue) => {
+    if (newValue)
+      model.setData(newValue)
+  })
   return {
+    queryKeyOfOne,
     dataOfOne,
     isPendingOfOne,
     isSuccessOfOne,

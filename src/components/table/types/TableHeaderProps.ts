@@ -2,6 +2,6 @@ import type { PaginatedResponseData, ResponseData } from "@/common/types/Respons
 
 export default interface TableHeaderProps {
   refetch: () => Promise<unknown>,
-  data: ResponseData | PaginatedResponseData,
+  data?: ResponseData | PaginatedResponseData,
   isPending: boolean,
 }

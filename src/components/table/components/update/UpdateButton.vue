@@ -26,7 +26,7 @@ const props = defineProps({
 const emit = defineEmits(['show-update-dialog'])
 
 const action = async () => {
-  tableProps.service.getModel().setData(props.dataToUpdate)
+  tableProps.model.setData(props.dataToUpdate)
   await queryClient.refetchQueries({
     queryKey: [queryKey + '-one']
   })
@@ -34,7 +34,7 @@ const action = async () => {
 
 
   if (props.customFunction)
-    props.customFunction(tableProps.service.getModel().getID())
+    props.customFunction(tableProps.model.getID())
   else emit('show-update-dialog')
 }
 

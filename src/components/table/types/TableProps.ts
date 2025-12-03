@@ -1,11 +1,10 @@
 import type { BaseModel } from "@/common/models/base/BaseModel";
-import type { BaseService } from "@/common/models/base/BaseService";
 import type { PaginatedResponseData, ResponseData } from "@/common/types/ResponseData";
 
 export interface TableProps<T extends BaseModel = BaseModel> {
   title?: string;
   dialogsHeader?: string;
-  service: BaseService<T>;
+  model: T;
   hasExpander?: boolean;
   paginate?: boolean;
   customAddFunction?: (data: unknown) => void;

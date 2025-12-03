@@ -43,7 +43,7 @@ const action = (event: MouseEvent) => {
       severity: 'danger',
     },
     accept: async () => {
-      tableProps?.service.getModel().setData(props.dataToDelete)
+      tableProps?.model.setData(props.dataToDelete)
       await mutate()
     },
   });
@@ -51,13 +51,13 @@ const action = (event: MouseEvent) => {
 
 const { mutate } = useMutation({
   mutationKey: [`${queryKey}-delete`],
-  mutationFn: () => tableProps.service.delete(),
+  mutationFn: () => tableProps.model.delete(),
   onSuccess: async () => {
     await queryClient.refetchQueries({
       queryKey: [queryKey]
     })
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_deleted'), life: 5000 });
-    tableProps.service.getModel().clearData()
+    tableProps.model.clearData()
   },
   onError: async (error) => {
     // if (error instanceof EmailError) {

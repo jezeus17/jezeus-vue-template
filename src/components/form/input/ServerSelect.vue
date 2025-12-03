@@ -1,6 +1,7 @@
 <template>
-  <VSelect v-bind="{ ...$attrs }" :loading="isPending || isRefetching || externLoading" v-model="model" :defaultValue
-    :name :label :optionId :options="data?.data" />
+  <VSelect v-bind="{ ...$attrs }" :loading="isPending || isRefetching || externLoading" v-model="modelValue"
+    :defaultValue :name :label :optionId :options="data?.data" />
+  {{ modelValue }}
 
 
 </template>
@@ -10,34 +11,33 @@ import { useQuery } from '@tanstack/vue-query';
 import { ref } from 'vue';
 import VSelect from './VSelect.vue';
 import type { ResponseData } from '@/common/types/ResponseData';
-import type { BaseService } from '@/common/models/base/BaseService';
 import type { BaseModel } from '@/common/models/base/BaseModel';
 
 type ServerSelectProps = {
-  label: string,
+  label?: string,
   name: string,
-  optionId: string,
+  optionId?: string,
   externLoading?: boolean,
   multi?: boolean,
   showClear?: boolean,
-  service: BaseService<BaseModel>,
+  model: BaseModel,
 }
 
 
 
 const props = withDefaults(defineProps<ServerSelectProps>(), { optionId: 'id', showClear: true });
-const model = defineModel();
+const modelValue = defineModel();
 
 const { data, isPending, isRefetching } =
   useQuery({
-    queryKey: [props.service.getModel().url],
+    queryKey: [props.model.url],
     queryFn: async () => {
-      const data: ResponseData = await props.service.getAll()
+      const data: ResponseData = await props.model.getAll()
       console.log(data)
-      console.log(props.service.getModel())
-      if (model.value) {
+      console.log(props.model)
+      if (modelValue.value) {
 
-        defaultValue.value = data.data.find((element) => element[props.service.getModel().getFieldAsID()] == model.value)
+        defaultValue.value = data.data.find((element) => element[props.model.getFieldAsID()] == modelValue.value)
       }
       console.log(data)
       return data

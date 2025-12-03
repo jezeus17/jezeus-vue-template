@@ -59,7 +59,7 @@ import CreateButton from './create/CreateButton.vue';
 import type { TableProps } from '../types/TableProps';
 const tableProps = inject('tableProps') as TableProps
 const props = defineProps<TableHeaderProps>()
-const { t } = useI18n(tableProps.service.getModel().getLocales());
+const { t } = useI18n(tableProps.model.getLocales());
 const emit = defineEmits(['change-mode', 'open-create-dialog'])
 const globalFilter = inject('globalFilter') as Ref<string>
 

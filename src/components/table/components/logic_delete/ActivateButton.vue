@@ -50,8 +50,8 @@ const action = (event: MouseEvent) => {
       //         updateObject[key] = parseDate(updateObject[key]);
       // }
 
-      updateObject[tableProps.service.getModel().getFieldAsActive()] = 1
-      tableProps.service.getModel().setData(updateObject)
+      updateObject[tableProps.model.getFieldAsActive()] = 1
+      tableProps.model.setData(updateObject)
 
       mutate(updateObject)
     },
@@ -61,13 +61,13 @@ const action = (event: MouseEvent) => {
 
 const { mutate } = useMutation({
   mutationKey: [`${queryKey}-activate`],
-  mutationFn: (data: object) => tableProps.service.update(data),
+  mutationFn: (data: object) => tableProps.model.update(data),
   onSuccess: async () => {
     await queryClient.refetchQueries({
       queryKey: [queryKey]
     })
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
-    tableProps.service.getModel().clearData()
+    tableProps.model.clearData()
   },
   onError: (error) => {
     toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.statusCode == 404 ? t('table.relations_error') : t(error.message), life: 5000 });

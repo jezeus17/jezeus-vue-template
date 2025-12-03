@@ -1,5 +1,5 @@
 <template>
-  <TableServerPagination ref="table" :service="animalService" paginate :query-options="{
+  <TableServerPagination ref="table" :model="animalModel" paginate :query-options="{
     relations: ['animal_kingdom']
   }" gridClass="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 
@@ -13,7 +13,7 @@
       <UpdateAnimal v-model="animalModel" />
     </template>
     <template #item-template="{ data }">
-      <AnimalItemTemplate :animal="data as AnimalModel" />
+      <AnimalItemTemplate :animal="data" />
     </template>
   </TableServerPagination>
 </template>
@@ -25,8 +25,6 @@ import CreateAnimal from "./components/CreateAnimal.vue";
 import UpdateAnimal from "./components/UpdateAnimal.vue";
 import ViewAnimal from "./components/ViewAnimal.vue";
 import AnimalItemTemplate from "./components/AnimalItemTemplate.vue";
-import { AnimalService } from "../services/animal.service";
 const table = ref()
-const animalModel: Ref<AnimalModel> = ref(new AnimalModel())
-const animalService = ref(new AnimalService(animalModel.value))
+const animalModel = ref(new AnimalModel()) as Ref<AnimalModel>
 </script>

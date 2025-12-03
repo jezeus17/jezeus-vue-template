@@ -25,7 +25,7 @@ const emit = defineEmits(['show-view-dialog'])
 
 
 const action = async () => {
-  tableProps.service.getModel().setData(props.dataToShow)
+  tableProps.model.setData(props.dataToShow)
   emit('show-view-dialog')
   props.refetch()
 

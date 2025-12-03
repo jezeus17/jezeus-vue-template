@@ -6,7 +6,7 @@
       :loading="isPendingOfOne || isRefetchingOfOne" :error="isErrorOfOne" :refetch="refetchOfOne" />
 
     <div v-else-if="isSuccessOfOne" class="dialog-form">
-      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :service="tableProps.service"></slot>
+      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :model></slot>
       <div class="flex justify-end gap-2">
         <Button type="button" :label="$t('global.confirm')" @click="visible = false"></Button>
       </div>
@@ -20,22 +20,15 @@ import { inject, type ModelRef } from 'vue';
 import { useQueryOfOne } from '../../composable/useQueryOfOne';
 import type { TableProps } from '../../types/TableProps';
 
-
-
 defineProps({
   header: {
     type: String,
     required: true
   }
 })
-
 const visible = defineModel() as ModelRef<boolean>
-const queryKey = inject('queryKey') as string
-const tableProps = inject('tableProps') as TableProps
+const { customGetOneFunction, model } = inject('tableProps') as TableProps
 
-
-const { dataOfOne, isErrorOfOne, isPendingOfOne, isRefetchingOfOne, isSuccessOfOne, refetchOfOne } = useQueryOfOne(queryKey, tableProps.service, {})
-
-
+const { dataOfOne, isErrorOfOne, isPendingOfOne, isRefetchingOfOne, isSuccessOfOne, refetchOfOne } = useQueryOfOne({ model, customGetOneFunction })
 
 </script>

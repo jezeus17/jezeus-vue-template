@@ -2,7 +2,7 @@
 
   <Dialog v-model:visible="visible" modal :header="$t('global.update') + ' ' + header" class="w-full m-4 max-w-[35rem]">
     <span>{{ $t('table.update_element') }}</span>
-    <Form @submit="(values) => mutate(values)" :validation-schema="tableProps.service.getUpdateSchema()">
+    <Form @submit="(values) => mutate(values)" :validation-schema="tableProps.model.getUpdateSchema()">
       <div class="dialog-form">
         <slot name="form"></slot>
       </div>
@@ -44,14 +44,14 @@ const isFormDataLoading = inject<Ref<boolean>>('isFormDataLoading')
 
 const { mutate, isPending } = useMutation({
   mutationKey: [`${queryKey}-update`],
-  mutationFn: (data: object) => tableProps.service.update(data),
+  mutationFn: (data: object) => tableProps.model.update(data),
   onSuccess: async () => {
     await queryClient.refetchQueries({
       queryKey: [queryKey]
     })
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
     visible.value = false
-    tableProps.service.getModel().clearData()
+    tableProps.model.clearData()
   },
   onError: (error) => {
     toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.message, life: 5000 });

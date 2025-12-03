@@ -7,8 +7,6 @@
         v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true" @filter="onFilter"
         @sort="onSortChange" filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData"
         :rows="5">
-
-
         <template #header>
           <TableHeader @open-create-dialog="createDialogVisible = true" :is-pending="isPending || isRefetching" :refetch
             :data @change-mode="dataMode = 'cards'">
@@ -24,7 +22,7 @@
           </TableHeader>
         </template>
         <Column expander v-if="hasExpander" style="width: 1rem" />
-        <template v-for="(col, index) in props.service.getModel().getColumns()" :key="index">
+        <template v-for="(col, index) in model.getColumns()" :key="index">
 
           <Column v-if="!col.isActionsColumn" :filterField="col.field" :field="col.field"
             :header="t(col.header as string)" :filterMatchModeOptions="filterOptions" :sortable="col.sortable">
@@ -44,7 +42,7 @@
               </template>
               <template v-else>
                 <Rating v-if="col.isRating" :modelValue="slotProps.data[col.field]" readonly />
-                <template v-else-if="col.isBoolean || col.field === props.service.getModel().getFieldAsActive()">
+                <template v-else-if="col.isBoolean || col.field === model.getFieldAsActive()">
                   <Tag v-if="slotProps.data[col.field] == true" severity="success" :value="$t('global.yes')" />
                   <Tag v-else severity="danger" :value="$t('global.no')" />
 
@@ -60,6 +58,9 @@
               <slot v-if="col.customFilterTemplate" :name="'custom-filter-template-' + col.customFilterTemplate"
                 :filterModel :filterCallback>
               </slot>
+              <ServerSelect v-else-if="model.isForeignKey(col.field)" v-model="filterModel.value" :name="col.field"
+                :optionLabel="model.getForeignKeyFieldAsLabel(col.field)"
+                :model="model.getForeignKeyModel(col.field)" />
               <IconField v-else>
                 <InputIcon>
                   <i class="pi pi-search" />
@@ -67,6 +68,7 @@
                 <InputText v-model="filterModel.value" @keyup.enter="filterCallback()"
                   :placeholder="$t('global.search')" />
               </IconField>
+
 
             </template>
             <template #filterclear="{ filterCallback }">
@@ -114,24 +116,17 @@
                     totalRecords ?
                     totalRecords : slotProps.state.first + 1 + limit }}, {{ t('of') }}
                   {{ totalRecords }}
-
                 </span>
-
-
               </section>
-
-
-
             </template>
           </Paginator>
         </template>
       </DataTable>
-
-      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :service :data="data?.data" :refetch
+      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :model :data="data?.data" :refetch
         :is-pending="isPending || isRefetching" :query-options="{
-          limit: limit,
-          offset: offset,
-          ...props.queryOptions,
+          limit,
+          offset,
+          ...queryOptions,
           where: { ...filtersForServer },
         }" :gridClass @show-update-dialog="updateDialogVisible = true" @show-view-dialog="viewDialogVisible = true">
         <template #header>
@@ -146,14 +141,10 @@
             <template #additional-general-actions>
               <slot name="additional-general-actions"></slot>
             </template>
-
           </TableHeader>
         </template>
-
         <template #item-template="{ data }">
           <slot name="item-template" :data></slot>
-
-
         </template>
       </CardsView>
     </template>
@@ -167,7 +158,7 @@
 
   <ViewDialog :header="dialogsHeader ?? t('header')" v-model="viewDialogVisible">
     <template #view-element>
-      <slot name="view-element" :dataOfOne :isPendingOfOne :isErrorOfOne :service :refetch></slot>
+      <slot name="view-element"></slot>
     </template>
   </ViewDialog>
 
@@ -176,27 +167,21 @@
       <slot name="form-update"></slot>
     </template>
   </UpdateDialog>
-
-
   <slot name="custom-dialog"></slot>
-
-
 </template>
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends BaseModel">
 import Column from 'primevue/column';
 import Card from 'primevue/card';
-import DataTable, { type DataTableSortEvent } from 'primevue/datatable';
+import DataTable from 'primevue/datatable';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import { provide, ref, watch, watchEffect, type Ref } from 'vue';
+import { provide, ref, useTemplateRef } from 'vue';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import Rating from 'primevue/rating';
 import { useI18n } from 'vue-i18n';
 import Skeleton from 'primevue/skeleton';
 import Paginator from 'primevue/paginator';
-import { useQueryOfOne } from './composable/useQueryOfOne';
 import UpdateDialog from './components/update/UpdateDialog.vue';
 import ViewDialog from './components/view/ViewDialog.vue';
 import CreateDialog from './components/create/CreateDialog.vue';
@@ -206,166 +191,56 @@ import CardsView from './components/CardsView.vue';
 import TableHeader from './components/TableHeader.vue';
 import type { TableProps } from './types/TableProps';
 import TableActions from './components/TableActions.vue';
+import ServerSelect from '../form/input/ServerSelect.vue';
+import { BaseModel } from '@/common/models/base/BaseModel';
+import { useTable } from './composable/useTable';
 
-useQueryClient()
-const props = withDefaults(defineProps<TableProps>(), { showTotalCard: true })
-const { t } = useI18n(props.service.getModel().getLocales());
+const props = withDefaults(defineProps<TableProps<T>>(), { showTotalCard: true })
+const { model, queryOptions, paginate, gridClass, isFormDataLoading } = props
+const { t } = useI18n(model.getLocales());
 
-const limit = ref(10)
-const offset = ref(0)
-const totalRecords = ref(0)
-const totalPages = ref(0)
-const dt = ref();
-const tableData = ref()
-const dataMode: Ref<'table' | 'cards'> = ref('table')
+const dt = useTemplateRef('dt');
 
-const filters: Ref<object> = ref({});
-const globalFilter = ref('');
-
-
-props.service.getModel().getFilters()?.forEach((f) => {
-  filters.value[f.field] = { value: null, matchMode: 'contains', filterMode: f.filterMode, filterField: f.filterField ? f.filterField : f.field }
-
-})
-
-const filtersForServer = ref({});
-const filterOptions = ref([
-  { label: 'Contains', value: 'contains' }
-])
-
-const fieldAsID = props.service.getModel().getFieldAsID()
-const queryKey = props.service.getModel().constructor.name
-
-const expandedRows = ref()
-const sortOptions = ref({ column: '', direction: 'asc' })
+const fieldAsID = model.getFieldAsID()
 
 const updateDialogVisible = ref(false)
 const viewDialogVisible = ref(false)
 const createDialogVisible = ref(false)
 
+const {
+  queryKey,
+  tableData,
+  queryData: data,
+  isPending,
+  isRefetching,
+  isError,
+  refetch,
+  limit,
+  offset,
+  totalPages,
+  totalRecords,
+  filters,
+  globalFilter,
+  filtersForServer,
+  expandedRows,
+  onFilter,
+  onSortChange,
+  dataMode,
+  filterOptions
+} = useTable<T>(props)
 
-const onSortChange = (e: DataTableSortEvent) => {
-  if (typeof e.sortField == 'string') {
-    sortOptions.value.column = e.sortField
-    sortOptions.value.direction = e.sortOrder === 1 ? 'asc' : 'desc'
-    refetch()
-  }
-
-}
-
-const onFilter = (event: { filters: { [s: string]: unknown; } | ArrayLike<unknown>; }) => {
-  filtersForServer.value = {}
-  Object.entries(event.filters).map((f) => {
-    if (f[1].value !== null && f[1].value !== undefined) {
-      switch (f[1].filterMode) {
-        case 'like':
-          filtersForServer.value[f[1].filterField] = `like %${f[1].value}%`
-          break;
-        case '=':
-          filtersForServer.value[f[1].filterField] = f[1].value
-          break;
-        case 'date':
-          {
-
-            const date = new Date(f[1].value);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-
-            const formattedDate = `${year}-${month}-${day}`;
-            filtersForServer.value[f[1].filterField] = `like %${formattedDate}%`
-            break;
-          }
-      }
-
-    }
-
-  })
-  refetch()
-}
-
-
-
-const { data, isPending, isSuccess, isRefetching, isError, refetch } = useQuery({
-  queryKey: [queryKey],
-  queryFn: () => {
-    if (props.paginate) {
-
-
-      return props.customGetAllFunction ?
-        props.customGetAllFunction(
-          {
-            limit: limit.value,
-            offset: offset.value,
-            ...props.queryOptions,
-            where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value,
-            orderBy: sortOptions.value
-          }
-        ) :
-        props.service.getAllPaginated(
-          {
-            limit: limit.value,
-            offset: offset.value,
-            ...props.queryOptions,
-            where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value,
-            orderBy: sortOptions.value
-          }
-        )
-    } else {
-      return props.customGetAllFunction ?
-        props.customGetAllFunction(
-          {
-            ...props.queryOptions,
-            where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value,
-            orderBy: sortOptions.value
-          }
-        ) :
-        props.service.getAll(
-          {
-            ...props.queryOptions,
-            where: { ...filtersForServer.value },
-            globalFilter: globalFilter.value,
-            orderBy: sortOptions.value
-          }
-        )
-    }
-  },
-
-})
-
-const { dataOfOne, isPendingOfOne, isErrorOfOne, refetchOfOne } = useQueryOfOne(queryKey, props.service, props.queryOptions, props.customGetOneFunction)
-
-const isLogicErase = props.service.getModel().getFieldAsActive() != ''
+const isLogicErase = props.model.getFieldAsActive() != ''
 
 provide('queryKey', queryKey)
 provide('tableProps', props)
 provide('isLogicErase', isLogicErase)
-provide('refetchOfOne', refetchOfOne)
 provide('globalFilter', globalFilter)
 provide('limit', limit)
 provide('offset', offset)
 provide('totalRecords', totalRecords)
 provide('totalPages', totalPages)
+provide('isFormDataLoading', isFormDataLoading)
 
-
-
-watch(dataOfOne, (newValue) => {
-  if (newValue)
-    props.service.getModel().setData(newValue)
-})
-watch(globalFilter, () => refetch())
-
-watchEffect(() => {
-  if (isSuccess.value && data.value && !isPending.value && !isRefetching.value) {
-    expandedRows.value = null
-    totalRecords.value = data.value.elements_amount
-    totalPages.value = data.value.pages
-    tableData.value = data.value.data
-  }
-});
 
 defineExpose({ refetch })
 

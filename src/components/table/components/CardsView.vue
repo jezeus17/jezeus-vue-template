@@ -30,7 +30,7 @@ const offset = inject('offset') as number
 const limit = inject('limit') as number
 
 
-const actionColumn = props.service.getModel().getColumns()?.filter(c => c.isActionsColumn)[0]
+const actionColumn = props.model.getColumns()?.filter(c => c.isActionsColumn)[0]
 
 
 

@@ -4,12 +4,11 @@
     <template #content>
 
       <DataTable v-if="dataMode == 'table'" :class="internDatatable ? 'intern-datatable' : ''"
-        v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true" @filter="onFilter"
-        @sort="onSortChange" filterDisplay="menu" scrollHeight="flex" ref="dt" size="small" :value="tableData"
-        :rows="5">
+        v-model:expandedRows="expandedRows" scrollable v-model:filters="filters as DataTableFilterMeta" :lazy="true"
+        @filter="onFilter as unknown as (event: DataTableFilterEvent) => void" @sort="onSortChange" filterDisplay="menu"
+        scrollHeight="flex" ref="dt" size="small" :value="tableData" :rows="5">
         <template #header>
-          <TableHeader @open-create-dialog="createDialogVisible = true" :is-pending="isPending || isRefetching" :refetch
-            :data @change-mode="dataMode = 'cards'">
+          <TableHeader :refetch :data @change-mode="dataMode = 'cards'">
             <template #header>
               <slot name="header"></slot>
             </template>
@@ -28,27 +27,27 @@
             :header="t(col.header as string)" :filterMatchModeOptions="filterOptions" :sortable="col.sortable">
 
 
-            <template #body="slotProps">
+            <template #body="{ data }: { data: BaseModel }">
               <Skeleton v-if="isRefetching || isPending" width="60%" borderRadius=".4rem" height="1.5rem" />
               <template v-else-if="col.fieldGetter">
-                <Rating v-if="col.isRating" :modelValue="slotProps.data[col.fieldGetter(slotProps.data)]" readonly />
+                <Rating v-if="col.isRating" :modelValue="data[col.fieldGetter(data) as number] as number" readonly />
                 <template v-else-if="col.isBoolean">{{
-                  col.fieldGetter(slotProps.data) == true ? t('global.yes') : t('global.no')
+                  col.fieldGetter(data) == true ? t('global.yes') : t('global.no')
                 }}</template>
-                <template v-else-if="col.fieldGetter(slotProps.data) !== undefined">{{
-                  col.fieldGetter(slotProps.data)
+                <template v-else-if="col.fieldGetter(data) !== undefined">{{
+                  col.fieldGetter(data)
                 }}</template>
                 <template v-else>-</template>
               </template>
               <template v-else>
-                <Rating v-if="col.isRating" :modelValue="slotProps.data[col.field]" readonly />
+                <Rating v-if="col.isRating" :modelValue="data[col.field] as number" readonly />
                 <template v-else-if="col.isBoolean || col.field === model.getFieldAsActive()">
-                  <Tag v-if="slotProps.data[col.field] == true" severity="success" :value="$t('global.yes')" />
+                  <Tag v-if="data[col.field] == true" severity="success" :value="$t('global.yes')" />
                   <Tag v-else severity="danger" :value="$t('global.no')" />
 
                 </template>
-                <template v-else-if="slotProps.data[col.field] !== undefined">{{
-                  slotProps.data[col.field]
+                <template v-else-if="data[col.field] !== undefined">{{
+                  data[col.field]
                 }}</template>
                 <template v-else>-</template>
               </template>
@@ -85,8 +84,7 @@
 
             <template #body=slotProps>
               <Skeleton v-if="isRefetching || isPending" width="60%" borderRadius=".4rem" height="1.5rem" />
-              <TableActions v-else :data="slotProps.data" :column="col" @show-update-dialog="updateDialogVisible = true"
-                @show-view-dialog="viewDialogVisible = true" />
+              <TableActions v-else :data="slotProps.data" :column="col" />
 
             </template>
           </Column>
@@ -104,17 +102,17 @@
           <slot name="expansion" :slotProps></slot>
         </template>
         <template #footer>
-          <Paginator v-if="paginate" :rows="limit" @page="(e) => {
+          <Paginator v-if="paginate" v-model:first="offset" :rows="limit" @page="(e) => {
             offset = e.first
             limit = e.rows
             refetch()
-          }" :totalRecords="totalRecords" :rowsPerPageOptions="[1, 10, 20, 30]">
+          }" :totalRecords="totalRecords" :rowsPerPageOptions="[1, 5, 10, 20, 50]">
             <template #end="slotProps">
               <section class="flex flex-col ml-4">
                 <span v-if="data">
-                  {{ slotProps.state.first + 1 }} {{ t('to') }} {{ slotProps.state.first + 1 + limit >
+                  {{ slotProps.state.first + 1 }} {{ $t('global.to') }} {{ slotProps.state.first + 1 + limit >
                     totalRecords ?
-                    totalRecords : slotProps.state.first + 1 + limit }}, {{ t('of') }}
+                    totalRecords : slotProps.state.first + 1 + limit }}, {{ $t('global.of') }}
                   {{ totalRecords }}
                 </span>
               </section>
@@ -122,16 +120,9 @@
           </Paginator>
         </template>
       </DataTable>
-      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :model :data="data?.data" :refetch
-        :is-pending="isPending || isRefetching" :query-options="{
-          limit,
-          offset,
-          ...queryOptions,
-          where: { ...filtersForServer },
-        }" :gridClass @show-update-dialog="updateDialogVisible = true" @show-view-dialog="viewDialogVisible = true">
+      <CardsView v-else-if="dataMode == 'cards' && paginate && data" :gridClass>
         <template #header>
-          <TableHeader @open-create-dialog="createDialogVisible = true" @change-mode="dataMode = 'table'"
-            :is-pending="isPending || isRefetching" :refetch :data>
+          <TableHeader>
             <template #header>
               <slot name="header"></slot>
             </template>
@@ -149,42 +140,23 @@
       </CardsView>
     </template>
   </Card>
-
-  <CreateDialog :header="dialogsHeader ?? t('header')" v-model="createDialogVisible">
-    <template #form>
-      <slot name="form-add"></slot>
-    </template>
-  </CreateDialog>
-
-  <ViewDialog :header="dialogsHeader ?? t('header')" v-model="viewDialogVisible">
-    <template #view-element>
-      <slot name="view-element"></slot>
-    </template>
-  </ViewDialog>
-
-  <UpdateDialog :header="dialogsHeader ?? t('header')" v-model="updateDialogVisible">
-    <template #form>
-      <slot name="form-update"></slot>
-    </template>
-  </UpdateDialog>
+  <InfoDialog />
+  <FormDialog />
   <slot name="custom-dialog"></slot>
 </template>
 <script setup lang="ts" generic="T extends BaseModel">
 import Column from 'primevue/column';
 import Card from 'primevue/card';
-import DataTable from 'primevue/datatable';
+import DataTable, { type DataTableFilterEvent, type DataTableFilterMeta } from 'primevue/datatable';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import { provide, ref, useTemplateRef } from 'vue';
+import { provide } from 'vue';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Rating from 'primevue/rating';
 import { useI18n } from 'vue-i18n';
 import Skeleton from 'primevue/skeleton';
 import Paginator from 'primevue/paginator';
-import UpdateDialog from './components/update/UpdateDialog.vue';
-import ViewDialog from './components/view/ViewDialog.vue';
-import CreateDialog from './components/create/CreateDialog.vue';
 import { Tag } from 'primevue';
 import LoadingPanel from '../ui/LoadingPanel.vue';
 import CardsView from './components/CardsView.vue';
@@ -194,100 +166,40 @@ import TableActions from './components/TableActions.vue';
 import ServerSelect from '../form/input/ServerSelect.vue';
 import { BaseModel } from '@/common/models/base/BaseModel';
 import { useTable } from './composable/useTable';
+import FormDialog from '../formDialog/FormDialog.vue';
+import InfoDialog from '../infoDialog/InfoDialog.vue';
 
 const props = withDefaults(defineProps<TableProps<T>>(), { showTotalCard: true })
-const { model, queryOptions, paginate, gridClass, isFormDataLoading } = props
+const { model, paginate, gridClass } = props
 const { t } = useI18n(model.getLocales());
 
-const dt = useTemplateRef('dt');
-
-const fieldAsID = model.getFieldAsID()
-
-const updateDialogVisible = ref(false)
-const viewDialogVisible = ref(false)
-const createDialogVisible = ref(false)
+const tableInfo = useTable<T>(props)
 
 const {
-  queryKey,
   tableData,
-  queryData: data,
+  data,
   isPending,
   isRefetching,
   isError,
   refetch,
   limit,
   offset,
-  totalPages,
   totalRecords,
   filters,
-  globalFilter,
-  filtersForServer,
   expandedRows,
   onFilter,
   onSortChange,
   dataMode,
-  filterOptions
-} = useTable<T>(props)
+  filterOptions,
+  fieldAsID,
+} = tableInfo
 
-const isLogicErase = props.model.getFieldAsActive() != ''
-
-provide('queryKey', queryKey)
+provide('tableInfo', tableInfo)
 provide('tableProps', props)
-provide('isLogicErase', isLogicErase)
-provide('globalFilter', globalFilter)
-provide('limit', limit)
-provide('offset', offset)
-provide('totalRecords', totalRecords)
-provide('totalPages', totalPages)
-provide('isFormDataLoading', isFormDataLoading)
 
 
-defineExpose({ refetch })
-
+defineExpose({ ...tableInfo })
 </script>
 <style>
-.p-card-body,
-.p-card-content,
-.p-datatable {
-  height: 100% !important;
-}
-
-.p-datatable-filter-constraint-dropdown {
-  display: none !important;
-}
-
-.dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.dialog-footer {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: space-between;
-}
-
-.loading,
-.error {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.p-datatable-thead {
-  z-index: 2 !important;
-}
-
-.intern-datatable .p-datatable-thead {
-  z-index: 1 !important;
-}
+@import "./styles/table.css"
 </style>

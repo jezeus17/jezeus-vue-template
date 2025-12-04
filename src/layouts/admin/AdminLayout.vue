@@ -14,22 +14,14 @@ const visible = ref(false)
   <main class="bg-[#f8fafc] dark:bg-[#09090b] w-screen  h-[100dvh] flex anim-fade-in-1">
     <aside class="hidden xl:flex ">
       <AdminSideBar />
-
     </aside>
-
     <aside class="card flex justify-center">
       <Drawer v-model:visible="visible" class="!w-fit">
         <template #container>
           <AdminSideBar @close="visible = false" />
-
         </template>
-
       </Drawer>
-
     </aside>
-
-
-
     <section class="h-full w-full flex-col flex gap-2 p-2 overflow-auto">
       <Navbar :hide-items="true">
         <template #sidebar-button>
@@ -42,10 +34,6 @@ const visible = ref(false)
       <div class="h-full overflow-auto max-w-full rounded-xl w-full">
         <RouterView></RouterView>
       </div>
-
     </section>
-
-
   </main>
-
 </template>

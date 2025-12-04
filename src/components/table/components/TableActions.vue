@@ -2,13 +2,11 @@
   <div class="custom-table-actions">
     <ViewButton :data-to-show="data" v-if="!hideViewButton &&
       (isLogicErase ? data[model.getFieldAsActive()] == true : true)
-      && (column.visibleViewFunction ? column.visibleViewFunction(data) : true)" :refetch="refetchOfOne"
-      @show-view-dialog="$emit('show-view-dialog')" />
+      && (column.visibleViewFunction ? column.visibleViewFunction(data) : true)" />
 
     <UpdateButton :data-to-update="data" v-if="!hideUpdateButton &&
       (isLogicErase ? data[model.getFieldAsActive()] == true : true)
-      && (column.visibleUpdateFunction ? column.visibleUpdateFunction(data) : true)"
-      @show-update-dialog="$emit('show-update-dialog')" :custom-function="customUpdateFunction" />
+      && (column.visibleUpdateFunction ? column.visibleUpdateFunction(data) : true)" />
     <template v-if="!hideDeleteButton && (column.visibleDeleteFunction ? column.visibleDeleteFunction(data) : true)">
 
       <DeleteButton :data-to-delete="data" v-if="!isLogicErase" />
@@ -38,16 +36,12 @@ import type { TableProps } from '../types/TableProps';
 import type ColumnProps from '../types/ColumnProps';
 import type { BaseModel } from '@/common/models/base/BaseModel';
 import { Button } from 'primevue';
-import { useQueryOfOne } from '../composable/useQueryOfOne';
+import type { TableMetadata } from '../composable/useTable';
 
-const { extraOptions, model, hideUpdateButton, hideDeleteButton, customUpdateFunction, hideViewButton, customGetOneFunction } = inject('tableProps') as TableProps
-const isLogicErase = inject('isLogicErase') as boolean
 
 defineProps<{ data: BaseModel, column: ColumnProps }>()
-defineEmits(['show-update-dialog', 'show-view-dialog'])
-const { refetchOfOne } = useQueryOfOne({ model, customGetOneFunction })
-
-
+const { extraOptions, model, hideUpdateButton, hideDeleteButton, hideViewButton } = inject('tableProps') as TableProps
+const { isLogicErase } = inject('tableInfo') as TableMetadata
 </script>
 
 <style>

@@ -7,8 +7,8 @@ export interface TableProps<T extends BaseModel = BaseModel> {
   model: T;
   hasExpander?: boolean;
   paginate?: boolean;
-  customAddFunction?: (data: unknown) => void;
-  customUpdateFunction?: (data: unknown) => void;
+  customAddFunction?: () => void;
+  customUpdateFunction?: () => void;
   customGetAllFunction?: (data: unknown) => Promise<ResponseData | PaginatedResponseData>;
   customGetOneFunction?: (id: string | number) => Promise<object>;
   queryOptions?: QueryOptions;
@@ -19,9 +19,13 @@ export interface TableProps<T extends BaseModel = BaseModel> {
   hideUpdateButton?: boolean;
   hideCreateButton?: boolean;
   hideDeleteButton?: boolean;
+  hideChangeMode?: boolean;
   showTotalCard?: boolean;
   internDatatable?: boolean;
-  gridClass?: string
+  gridClass?: string,
+  createFormComponent: unknown;
+  updateFormComponent: unknown;
+  detailsComponent: unknown
 }
 interface QueryOptions {
   limit?: number;

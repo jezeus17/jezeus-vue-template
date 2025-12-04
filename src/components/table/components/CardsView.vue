@@ -7,10 +7,13 @@ import { inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type CardsViewProps from '../types/CardsViewProps';
 import TableActions from './TableActions.vue';
+import type { TableMetadata } from '../composable/useTable';
+import type { TableProps } from '../types/TableProps';
+import type { BaseModel } from '@/common/models/base/BaseModel';
 
 const { t } = useI18n()
 
-const props = withDefaults(defineProps<CardsViewProps>(), {
+withDefaults(defineProps<CardsViewProps>(), {
   gridClass: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 ',
   paginationOptions: () => [1, 5, 10, 20],
   gridOptions: () => ({
@@ -22,18 +25,9 @@ const props = withDefaults(defineProps<CardsViewProps>(), {
     xxl: 5
   }),
 })
-const emit = defineEmits(['update-start-index', 'update-pagination-size', 'show-update-dialog', 'show-view-dialog'])
-
-
-const totalRecords = inject('totalRecords') as number
-const offset = inject('offset') as number
-const limit = inject('limit') as number
-
-
-const actionColumn = props.model.getColumns()?.filter(c => c.isActionsColumn)[0]
-
-
-
+const { totalRecords, limit, offset, isPending, isRefetching, isError, tableData, refetch } = inject("tableInfo") as TableMetadata
+const { model } = inject("tableProps") as TableProps
+const actionColumn = model.getColumns()?.filter(c => c.isActionsColumn)[0]
 
 </script>
 <template>
@@ -44,15 +38,14 @@ const actionColumn = props.model.getColumns()?.filter(c => c.isActionsColumn)[0]
           :options="filterOptions" optionLabel="name" @change="onFilterOptions" />
       </div> -->
 
-    <template v-if="!isPending">
+    <template v-if="!isPending && !isRefetching">
       <!--  -->
       <section :class="'grid h-full w-full gap-4  overflow-auto overflow-x-hidden p-2    ' + gridClass">
-        <Card v-for="(item, index) in data" :key="index"
+        <Card v-for="(item, index) in tableData" :key="index"
           class="border h-fit border-solid border-[var(--p-menubar-border-color)] hover:scale-101 transition-transform">
           <template #content>
             <slot name="item-template" :data="item"></slot>
-            <TableActions v-if="actionColumn" :data="item" :column="actionColumn"
-              @show-update-dialog="emit('show-update-dialog')" @show-view-dialog="emit('show-view-dialog')" />
+            <TableActions v-if="actionColumn" :data="item as BaseModel" :column="actionColumn" />
           </template>
         </Card>
 
@@ -60,45 +53,37 @@ const actionColumn = props.model.getColumns()?.filter(c => c.isActionsColumn)[0]
 
       </section>
 
-      <span v-if="data.length === 0" class="text-red-500 font-medium cursor-pointer text-base">{{
+      <span v-if="tableData?.length === 0" class="text-red-500 font-medium cursor-pointer text-base">{{
         t('global.no-results') }}</span>
 
     </template>
-    <span v-else-if="isError" @click="refetch"
+    <span v-else-if="isError" @click="refetch()"
       class="text-red-500 overflow-auto  font-medium cursor-pointer text-base">{{
         t('global.error') }}
-      <Button @click="refetch" :label="t('global.retry')"></Button>
+      <Button @click="refetch()" :label="t('global.retry')"></Button>
     </span>
 
     <div :class="'grid w-full h-full overflow-auto  gap-4 ' + gridClass" v-else>
-      <Skeleton v-for="e in [1, 2, 3]" height="8rem" :key="e" class=" w-full animate-pulse   " />
+      <Skeleton v-for="e in [1, 2, 3, 4]" height="8rem" :key="e" class=" w-full animate-pulse   " />
     </div>
 
-    <Paginator class="w-full flex items-center justify-center" :rows="limit" @page="(e) => {
+    <Paginator class="w-full flex items-center justify-center" v-model:first="offset" :rows="limit" @page="(e) => {
       offset = e.first
       limit = e.rows
       refetch()
-    }" :totalRecords="totalRecords" :rowsPerPageOptions="[1, 10, 20, 30]">
+    }" :totalRecords="totalRecords" :rowsPerPageOptions="[1, 5, 10, 20, 50]">
 
       <template #end="slotProps">
         <section class="flex flex-col ml-4">
-          <span v-if="data && data.length > 0">
+          <span v-if="tableData && tableData.length > 0">
             {{ slotProps.state.first + 1 }} {{ t('to') }} {{ slotProps.state.first + 1 + limit >
               totalRecords ?
               totalRecords : slotProps.state.first + 1 + limit }}, {{ t('of') }}
             {{ totalRecords }}
-
           </span>
-
-
         </section>
-
-
-
       </template>
     </Paginator>
-
-
   </div>
 </template>
 <style>

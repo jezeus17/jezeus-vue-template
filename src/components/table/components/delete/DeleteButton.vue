@@ -3,15 +3,16 @@
     @click="action($event)" />
 </template>
 <script setup lang="ts">
-import { inject, type Ref } from 'vue';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { inject } from 'vue';
+import { useMutation } from '@tanstack/vue-query';
 import { Button, useConfirm, useToast } from 'primevue';
 import { useI18n } from 'vue-i18n';
 import type { TableProps } from '../../types/TableProps';
+import type { TableMetadata } from '../../composable/useTable';
 
-const queryClient = useQueryClient()
 
-const queryKey = inject<Ref<string>>('queryKey')
+const { queryKey, refetch } = inject('tableInfo') as TableMetadata
+
 const confirm = useConfirm()
 const toast = useToast()
 const { t } = useI18n()
@@ -29,7 +30,7 @@ const props = defineProps({
 const action = (event: MouseEvent) => {
 
   confirm.require({
-    target: event.currentTarget,
+    target: event.currentTarget as HTMLElement,
     header: t('global.delete'),
     message: t('delete_element_ask'),
     icon: 'pi pi-exclamation-triangle',
@@ -42,9 +43,9 @@ const action = (event: MouseEvent) => {
       label: t('global.delete'),
       severity: 'danger',
     },
-    accept: async () => {
+    accept: () => {
       tableProps?.model.setData(props.dataToDelete)
-      await mutate()
+      mutate()
     },
   });
 };
@@ -53,9 +54,7 @@ const { mutate } = useMutation({
   mutationKey: [`${queryKey}-delete`],
   mutationFn: () => tableProps.model.delete(),
   onSuccess: async () => {
-    await queryClient.refetchQueries({
-      queryKey: [queryKey]
-    })
+    refetch()
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_deleted'), life: 5000 });
     tableProps.model.clearData()
   },

@@ -36,14 +36,14 @@ export abstract class BaseModel {
   }
 
   public getID() {
-    return this[this.getFieldAsID()];
+    return this[this.getFieldAsID()] as string | number;
   }
   public getLocales() {
     return (this.constructor as typeof BaseModel).locales;
   }
 
 
-  public getFieldAsID() {
+  public getFieldAsID(): string {
     const properties = Object.getOwnPropertyNames(this);
     for (const property of properties) {
       if (Reflect.getMetadata("fieldAsID", this, property)) {

@@ -1,17 +1,35 @@
 import type { BaseModel } from "@/common/models/base/BaseModel";
 import type { PaginatedResponseData, ResponseData } from "@/common/types/ResponseData";
-import { useQuery } from "@tanstack/vue-query";
+import type { FilterMetadata } from "@/components/table/types/Filter";
+import { useQuery, type QueryObserverResult, type RefetchOptions } from "@tanstack/vue-query";
 import type { DataTableSortEvent } from "primevue";
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect, type Ref } from "vue";
 
-export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, paginate }: {
+
+export type QueryOfAllResult = {
+  queryKey: string;
+  limit: Ref<number, number>;
+  offset: Ref<number, number>;
+  totalRecords: Ref<number, number>;
+  totalPages: Ref<number, number>;
+  filtersForServer: Ref<unknown>;
+  globalFilter: Ref<string>;
+  onSortChange: (e: DataTableSortEvent) => void;
+  onFilter: (event: { filters: Array<FilterMetadata>; }) => void
+  data: Ref<ResponseData | PaginatedResponseData, ResponseData | PaginatedResponseData> | Ref<undefined, undefined>;
+  refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<ResponseData | PaginatedResponseData, Error>>
+  isPending: Ref<false, false> | Ref<true, true>;
+  isSuccess: Ref<false, false> | Ref<true, true>;
+  isError: Ref<false, false> | Ref<true, true>;
+  error: Ref<Error, Error> | Ref<null, null>;
+  isRefetching: Ref<false, false> | Ref<true, true>;
+}
+export function useQueryOfAll({ queryOptions, model, customGetAllFunction, paginate }: {
   paginate?: boolean
   model: BaseModel,
   queryOptions?: object,
   customGetAllFunction?: (data: unknown) => Promise<ResponseData | PaginatedResponseData>
-}
-
-) => {
+}): QueryOfAllResult {
   const limit = ref(10)
   const offset = ref(0)
   const totalRecords = ref(0)
@@ -54,8 +72,6 @@ export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, pagin
     }
   })
 
-
-
   const onSortChange = (e: DataTableSortEvent) => {
     if (typeof e.sortField == 'string') {
       sortOptions.value.column = e.sortField
@@ -64,7 +80,7 @@ export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, pagin
     }
   }
 
-  const onFilter = (event: { filters: { [s: string]: unknown; } | ArrayLike<unknown>; }) => {
+  const onFilter = (event: { filters: Array<FilterMetadata> }) => {
     filtersForServer.value = {}
     Object.entries(event.filters).map((f) => {
       if (f[1].value !== null && f[1].value !== undefined) {
@@ -95,7 +111,7 @@ export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, pagin
   watch(globalFilter, () => refetch())
 
   watchEffect(() => {
-    if (isSuccess.value && data.value && !isPending.value && !isRefetching.value) {
+    if (data.value && "elements_amount" in data?.value && isSuccess.value && data.value && !isPending.value && !isRefetching.value) {
       totalRecords.value = data.value.elements_amount
       totalPages.value = data.value.pages
     }
@@ -109,7 +125,6 @@ export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, pagin
     isError,
     error,
     isRefetching,
-    refetch,
     limit,
     totalRecords,
     totalPages,
@@ -117,6 +132,8 @@ export const useQueryOfAll = ({ queryOptions, model, customGetAllFunction, pagin
     filtersForServer,
     globalFilter,
     onSortChange,
-    onFilter
+    onFilter,
+    refetch,
+
   }
 };

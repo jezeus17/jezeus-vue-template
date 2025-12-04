@@ -9,7 +9,7 @@ export default interface ColumnProps {
   visibleViewFunction?: (data: BaseModel) => boolean,
   visibleUpdateFunction?: (data: BaseModel) => boolean,
   visibleDeleteFunction?: (data: BaseModel) => boolean,
-  fieldGetter?: (data: BaseModel) => unknown,
+  fieldGetter?: (data: BaseModel) => string | number | boolean,
   filter?: boolean,
   sortable?: boolean,
   customFilterTemplate?: string,

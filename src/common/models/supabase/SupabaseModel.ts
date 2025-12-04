@@ -83,7 +83,8 @@ export class SupabaseModel extends BaseModel {
     }
     const { data, error } = await query.select()
 
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     else
       return { data }
   }
@@ -97,7 +98,8 @@ export class SupabaseModel extends BaseModel {
       .select('*' + relations)
       .eq(this.getFieldAsID(), id)
     console.log(responseData)
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     else return responseData
   }
   public async getSelf(params: { relations?: string[] } = {}) {
@@ -107,7 +109,8 @@ export class SupabaseModel extends BaseModel {
       .select('*' + relations)
       .eq(this.getFieldAsID(), this.getID())
 
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     else return responseData
   }
 
@@ -125,7 +128,7 @@ export class SupabaseModel extends BaseModel {
       .from(this.url)
       .insert([data])
 
-    if (error) throw error
+    if (error) throw new Error(error.message)
     else return responseData
   }
 
@@ -137,7 +140,8 @@ export class SupabaseModel extends BaseModel {
       .from(this.url)
       .update([data])
       .eq(this.getFieldAsID(), recordId)
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     else return responseData
   }
 
@@ -148,7 +152,8 @@ export class SupabaseModel extends BaseModel {
       .delete()
       .eq(this.getFieldAsID(), recordId)
 
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     else return responseData
   }
 
@@ -158,9 +163,10 @@ export class SupabaseModel extends BaseModel {
       .select(this.getFieldAsID())
       .eq(field, value)
       .limit(1)
-    if (error) throw error
+    if (error) throw new Error(error.message)
+
     const possibleEqualRow = data[0]
-    return !possibleEqualRow || possibleEqualRow[this.getFieldAsID()] === this.getID()
+    return !possibleEqualRow || possibleEqualRow[this.getFieldAsID()] == this.getID()
   }
 
 

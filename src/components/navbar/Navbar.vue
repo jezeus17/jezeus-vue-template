@@ -1,9 +1,5 @@
 <template>
   <div :class="`${absolute ? 'top-0 left-0 absolute home p-2' : ''} w-full  z-50 `">
-
-
-
-
     <Menubar :model="items">
 
       <template #start>
@@ -19,7 +15,7 @@
           <SelectLanguage />
           <ToggleDarkMode />
           <PrimaryColorSelector />
-          <UserAvatar v-if="isAuthenticated" />
+          <!-- <UserAvatar v-if="isAuthenticated" /> -->
         </div>
       </template>
     </Menubar>
@@ -50,14 +46,6 @@ const isAuthenticated = ref(TokenHandler.getToken() != null)
 
 const menuItems = props.hideItems ? [] : getNavbarItems()
 
-
-
-
-
-
-
-
-
 const items = ref([]);
 
 const fillNavbarMenu = () => {
@@ -72,9 +60,6 @@ const fillNavbarMenu = () => {
     console.log(error.message)
   }
 }
-
-
-
 
 fillNavbarMenu()
 updateNavbarLabels(items.value, t);

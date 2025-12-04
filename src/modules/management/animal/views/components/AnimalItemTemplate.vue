@@ -4,13 +4,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { Animal } from '../../models/animal.model';
 import { useI18n } from 'vue-i18n';
 import { locales } from '../../locales/locales';
+import type { AnimalModel } from '../../models/animal.model';
 
 const { t } = useI18n(locales)
 
-defineProps<{ animal: Animal }>()
+defineProps<{ animal: AnimalModel }>()
 </script>
 
 <style></style>

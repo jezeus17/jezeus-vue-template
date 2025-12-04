@@ -47,7 +47,9 @@
     "refresh": "Refrescar",
     "confirm-delete": "¿Desea eliminar el elemento? Se perderá toda la información correspondiente",
     "disabled": "Deshabilitado",
-    "change-mode": "Cambiar modo"
+    "change-mode": "Cambiar modo",
+    "to": "hasta",
+    "of": "de"
   },
   "table": {
     "element_ok_updated": "Elemento actualizado correctamente",

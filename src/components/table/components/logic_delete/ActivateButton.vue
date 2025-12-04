@@ -3,15 +3,15 @@
     v-tooltip="$t('global.recover')" @click="action($event)" />
 </template>
 <script setup lang="ts">
-import { inject, type Ref } from 'vue';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { inject } from 'vue';
+import { useMutation } from '@tanstack/vue-query';
 import { Button, useConfirm, useToast } from 'primevue';
 import { useI18n } from 'vue-i18n';
 import type { TableProps } from '../../types/TableProps';
+import type { TableMetadata } from '../../composable/useTable';
 
-const queryClient = useQueryClient()
 
-const queryKey = inject<Ref<string>>('queryKey')
+const { queryKey, refetch } = inject('tableInfo') as TableMetadata
 const confirm = useConfirm()
 const toast = useToast()
 const { t } = useI18n()
@@ -30,7 +30,7 @@ const props = defineProps({
 const action = (event: MouseEvent) => {
 
   confirm.require({
-    target: event.currentTarget,
+    target: event.currentTarget as HTMLElement,
     header: t('table.activate'),
 
     message: t('activate_element_ask'),
@@ -52,7 +52,6 @@ const action = (event: MouseEvent) => {
 
       updateObject[tableProps.model.getFieldAsActive()] = 1
       tableProps.model.setData(updateObject)
-
       mutate(updateObject)
     },
   });
@@ -63,14 +62,12 @@ const { mutate } = useMutation({
   mutationKey: [`${queryKey}-activate`],
   mutationFn: (data: object) => tableProps.model.update(data),
   onSuccess: async () => {
-    await queryClient.refetchQueries({
-      queryKey: [queryKey]
-    })
+    await refetch()
     toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
     tableProps.model.clearData()
   },
   onError: (error) => {
-    toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: error.statusCode == 404 ? t('table.relations_error') : t(error.message), life: 5000 });
+    toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t(error.message), life: 5000 });
   }
 })
 

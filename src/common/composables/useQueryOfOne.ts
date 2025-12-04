@@ -1,12 +1,23 @@
 import type { BaseModel } from "@/common/models/base/BaseModel";
-import { useQuery } from "@tanstack/vue-query";
-import { watch } from "vue";
+import { useQuery, type QueryObserverResult, type RefetchOptions } from "@tanstack/vue-query";
+import { watch, type Ref } from "vue";
 
-export const useQueryOfOne = ({ queryOptions, customGetOneFunction, model }: {
+export type QueryOfOneResult = {
+  queryKeyOfOne: string;
+  dataOfOne: Ref<unknown, unknown> | Ref<undefined, undefined>;
+  refetchOfOne: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<unknown, Error>>
+  isPendingOfOne: Ref<false, false> | Ref<true, true>;
+  isSuccessOfOne: Ref<false, false> | Ref<true, true>;
+  isErrorOfOne: Ref<false, false> | Ref<true, true>;
+  errorOfOne: Ref<Error, Error> | Ref<null, null>;
+  isRefetchingOfOne: Ref<false, false> | Ref<true, true>;
+}
+
+export function useQueryOfOne({ queryOptions, customGetOneFunction, model }: {
   model: BaseModel,
   queryOptions?: object,
   customGetOneFunction?: (id: number, queryOptions?: object) => Promise<object>
-}) => {
+}): QueryOfOneResult {
   const queryKeyOfOne = `${model.constructor.name}-one`
 
   const {

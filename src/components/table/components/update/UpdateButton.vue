@@ -3,39 +3,52 @@
     v-tooltip="$t('global.update')" @click="action" />
 </template>
 <script setup lang="ts">
-import { inject, type Ref } from 'vue';
-import { useQueryClient } from '@tanstack/vue-query';
+import { inject } from 'vue';
 import { Button } from 'primevue';
 import type { TableProps } from '../../types/TableProps';
+import useFormDialog from '@/components/formDialog/useFormDialog';
+import type { TableMetadata } from '../../composable/useTable';
 
-const queryClient = useQueryClient()
-
-const queryKey = inject<Ref<string>>('queryKey')
-
-const tableProps = inject('tableProps') as TableProps
 const props = defineProps({
   dataToUpdate: {
     type: Object,
     required: true
   },
-  customFunction: {
-    type: Function
-  }
 })
+const { model, customUpdateFunction, updateFormComponent } = inject('tableProps') as TableProps
+const { refetchOfOne, refetch } = inject("tableInfo") as TableMetadata
 
-const emit = defineEmits(['show-update-dialog'])
 
-const action = async () => {
-  tableProps.model.setData(props.dataToUpdate)
-  await queryClient.refetchQueries({
-    queryKey: [queryKey + '-one']
+const action = () => {
+  model.setData(props.dataToUpdate)
+  if (customUpdateFunction)
+    customUpdateFunction()
+  else useFormDialog().show<object>({
+    dialogOptions: {
+      title: 'global.update',
+      subtitle: 'table.update_element',
+      content: updateFormComponent,
+    },
+    submitOptions: {
+      model,
+      action: (data) => model.update(data),
+    },
+    successOptions: {
+      action: () => {
+        refetch()
+        model.clearData()
+      },
+      message: 'table.element_ok_updated'
+    },
+    cancelOptions: {
+      action: () => {
+        model.clearData()
+      },
+    },
+    validationSchema: model.getUpdateSchema(),
   })
+  refetchOfOne()
 
-
-
-  if (props.customFunction)
-    props.customFunction(tableProps.model.getID())
-  else emit('show-update-dialog')
 }
 
 

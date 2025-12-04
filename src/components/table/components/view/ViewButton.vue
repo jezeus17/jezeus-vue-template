@@ -6,31 +6,39 @@
 import { inject } from 'vue';
 import { Button } from 'primevue';
 import type { TableProps } from '../../types/TableProps';
+import useInfoDialog from '@/components/infoDialog/useINfoDialog';
+import type { TableMetadata } from '../../composable/useTable';
+import { useI18n } from 'vue-i18n';
 
+const { model, detailsComponent, customGetOneFunction, dialogsHeader } = inject('tableProps') as TableProps
+const { isErrorOfOne, isPendingOfOne, isRefetchingOfOne, isSuccessOfOne, refetchOfOne } = inject('tableInfo') as TableMetadata
 
-const tableProps = inject('tableProps') as TableProps
-const props = defineProps({
+const { t } = useI18n(model.getLocales())
+
+const { dataToShow } = defineProps({
   dataToShow: {
     type: Object,
-    required: true
-  },
-  refetch: {
-    type: Function,
     required: true
   }
 })
 
-
-const emit = defineEmits(['show-view-dialog'])
-
-
 const action = async () => {
-  tableProps.model.setData(props.dataToShow)
-  emit('show-view-dialog')
-  props.refetch()
+  model.setData(dataToShow)
+  useInfoDialog().show({
+    content: detailsComponent,
+    model,
+    isError: isErrorOfOne,
+    isRefetching: isRefetchingOfOne,
+    isPending: isPendingOfOne,
+    isSuccess: isSuccessOfOne,
+    retrieveInfoAction: async () => {
+      if (customGetOneFunction)
+        await customGetOneFunction(model.getID())
+      else await refetchOfOne()
+    },
+    title: dialogsHeader ?? t('header'),
+  })
 
 }
-
-
 
 </script>

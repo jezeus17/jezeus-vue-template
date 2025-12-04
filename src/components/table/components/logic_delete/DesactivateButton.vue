@@ -61,10 +61,11 @@ const action = (event: MouseEvent) => {
 const { mutate } = useMutation({
   mutationKey: [`${queryKey}-activate`],
   mutationFn: (data: object) => tableProps.model.update(data),
-  onSuccess: async () => {
-    await refetch()
-    toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
+  onSuccess: () => {
+    toast.add({ severity: 'success', summary: t('global.operation_succeded'), detail: t('table.element_ok_updated'), life: 5000 });
     tableProps.model.clearData()
+    refetch()
+
   },
   onError: (error) => {
     toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t(error.message), life: 5000 });

@@ -67,7 +67,6 @@
                 <InputText v-model="filterModel.value" @keyup.enter="filterCallback()"
                   :placeholder="$t('global.search')" />
               </IconField>
-              //TODO Implement number and date filters
 
 
             </template>
@@ -75,7 +74,7 @@
               <Button type="button" icon="pi pi-times" @click="filterCallback()" severity="secondary"></Button>
             </template>
             <template #filterapply="{ filterCallback }">
-              <Button type="button" icon="pi pi-check" @click="filterCallback()" severity="success"></Button>
+              <Button type="button" icon="pi pi-check" @click="filterCallback()"></Button>
             </template>
 
 
@@ -169,6 +168,8 @@ import { BaseModel } from '@/common/models/base/BaseModel';
 import { useTable } from './composable/useTable';
 import FormDialog from '../formDialog/FormDialog.vue';
 import InfoDialog from '../infoDialog/InfoDialog.vue';
+
+//TODO Implement number and date filters
 
 const props = withDefaults(defineProps<TableProps<T>>(), { showTotalCard: true })
 const { model, paginate, gridClass } = props

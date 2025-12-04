@@ -53,10 +53,10 @@ const action = (event: MouseEvent) => {
 const { mutate } = useMutation({
   mutationKey: [`${queryKey}-delete`],
   mutationFn: () => tableProps.model.delete(),
-  onSuccess: async () => {
-    refetch()
-    toast.add({ severity: 'info', summary: t('global.operation_succeded'), detail: t('table.element_ok_deleted'), life: 5000 });
+  onSuccess: () => {
+    toast.add({ severity: 'success', summary: t('global.operation_succeded'), detail: t('table.element_ok_deleted'), life: 5000 });
     tableProps.model.clearData()
+    refetch()
   },
   onError: async (error) => {
     // if (error instanceof EmailError) {

@@ -55,7 +55,6 @@ export abstract class BaseModel {
   public getFieldAsLabel() {
     const properties = Object.getOwnPropertyNames(this);
     for (const property of properties) {
-      console.log(property)
       if (Reflect.getMetadata("fieldAsLabel", this, property)) {
         return property;
       }
@@ -92,7 +91,6 @@ export abstract class BaseModel {
   public getUniqueFields() {
     const submitData = { ...this };
     return Object.keys(submitData).filter((key) => {
-      console.log(key)
       if (Reflect.getMetadata("uniqueField", this, key)) {
         return key;
       }
@@ -162,7 +160,6 @@ export abstract class BaseModel {
 
   private getSchemaWithUniqueFields(modelSchema: ObjectSchema<object>) {
     let returnSchema = modelSchema
-    console.log(this.getUniqueFields())
     this.getUniqueFields().forEach(field => {
       returnSchema = modelSchema.shape({
         [field]: modelSchema.fields[field].test(

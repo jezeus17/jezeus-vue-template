@@ -40,7 +40,6 @@ export class RestModel extends BaseModel {
     });
   }
   public async update(data?: object, id?: number | string) {
-    console.log(id)
     return await sendRequest({
       method: "PATCH",
       url: `${this.url}/${id ?? this.getID()}`,

@@ -1,7 +1,7 @@
 <template>
 
   <Dialog v-model:visible="visible" @after-hide="cleanForm" modal :header="t('title')"
-    class="w-4/5 max-w-50rem min-w-25rem">
+    class="w-4/5 max-[w-50rem] min-[w-25rem]">
 
     <span>{{ t('subtitle') }}</span>
     <Form @submit="() => changePassword()" :validation-schema="schema">
@@ -67,8 +67,6 @@ const { mutate: changePassword, isPending: isAddPending } = useMutation({
     method: 'PATCH'
   }),
   onSuccess: (data) => {
-    console.log(data.status)
-    console.log(data.status == 401)
     if (data.status == 401) {
       toast.add({ severity: 'error', summary: t('global.operation_failed'), detail: t('wrong_password'), life: 5000 });
     } else {

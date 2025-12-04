@@ -23,7 +23,6 @@ export class SupabaseModel extends BaseModel {
     let query = supabase
       .from(this.url)
       .select('*' + relations, { count: 'exact' });
-    console.log(this.url)
     if (params.globalFilter && params.globalFilter.trim() !== '') {
       const searchTerm = params.globalFilter.trim();
       query = query.or(
@@ -39,8 +38,6 @@ export class SupabaseModel extends BaseModel {
         ascending: params.orderBy?.direction === 'asc'
       });
     }
-    console.log(params)
-
 
     const { count: totalElements, error: countError, data } = await query
       .range(params.offset, params.offset + params.limit - 1);
@@ -97,7 +94,6 @@ export class SupabaseModel extends BaseModel {
       .from(this.url)
       .select('*' + relations)
       .eq(this.getFieldAsID(), id)
-    console.log(responseData)
     if (error) throw new Error(error.message)
 
     else return responseData

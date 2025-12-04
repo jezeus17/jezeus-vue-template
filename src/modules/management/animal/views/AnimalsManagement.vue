@@ -4,7 +4,7 @@
   }" gridClass="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" :create-form-component="CreateAnimal"
     :update-form-component="UpdateAnimal" :details-component="ViewAnimal">
     <template #item-template="{ data }">
-      <AnimalItemTemplate :animal="data" />
+      <AnimalItemTemplate :animal="data as AnimalModel" />
     </template>
   </CustomTable>
 </template>

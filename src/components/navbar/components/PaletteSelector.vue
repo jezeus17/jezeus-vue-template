@@ -36,16 +36,10 @@ const toggle = (event: Event) => {
 
 onMounted(() => {
   const savedMode = localStorage.getItem('primaryColor');
-  console.log(savedMode)
   selectedColor.value = savedMode !== null && savedMode !== undefined ? JSON.parse(savedMode) : 'blue'
-  console.log(selectedColor.value)
   if (selectedColor.value)
     changePrimaryColor(selectedColor.value)
 });
-
-// function toggleDarkMode() {
-//   useEvents().dispatch('darkmode-change')
-// }
 
 const changePrimaryColor = (color: string) => {
   selectedColor.value = color

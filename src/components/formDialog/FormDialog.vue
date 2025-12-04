@@ -80,7 +80,6 @@ const submit = async (values: unknown) => {
           detail: getMessage(message, 'error'),
           life: 5000
         })
-        console.log(err)
       }
 
     }

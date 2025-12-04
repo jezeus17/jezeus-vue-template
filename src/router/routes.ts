@@ -11,7 +11,7 @@ export default [
     name: "admin",
     component: AdminLayout,
     meta: { requiresAuth: true },
-    children: getRouterArray()
+    children: getRouterArray() //TODO Implement multiple parent routes, and not only admin
   },
 
   {

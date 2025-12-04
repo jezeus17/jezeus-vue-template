@@ -2,14 +2,10 @@
 import { useQuery } from '@tanstack/vue-query';
 import { Card, Paginator, SelectButton } from 'primevue';
 import Button from 'primevue/button';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
 import Skeleton from 'primevue/skeleton';
-import { computed, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-
+//TODO Fix This component
 const { t } = useI18n()
 
 const props = defineProps({
@@ -82,10 +78,10 @@ const {
     queryKey: [props.queryKey, limit.value, offset.value, filters.value],
     queryFn: async () => {
         try {
-            return await props.queryFunction({ 
-                limit: limit.value, 
-                offset: offset.value, 
-                where: filters.value 
+            return await props.queryFunction({
+                limit: limit.value,
+                offset: offset.value,
+                where: filters.value
             })
         } catch (err) {
             console.error("Query error:", err)
@@ -125,7 +121,7 @@ const onFilterOptions = (event) => {
 
 }
 const onFilter = (e) => {
-    
+
     // Object.entries(event.filters).map((f) => {
     //     if (f[1].value !== null && f[1].value !== undefined) {
     //         switch (f[1].filterMode) {
@@ -167,11 +163,12 @@ defineExpose({ refetch })
                             @keydown="(e) => { if (e.key == 'Enter') { offset = 0; onFilterOptions() } }" />
                     </IconField> -->
 
-                    <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" :disabled="isPending || isRefetching" @click="() => {
-                        offset = 0
-                        refetch()
+                    <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" :disabled="isPending || isRefetching"
+                        @click="() => {
+                            offset = 0
+                            refetch()
 
-                    }" />
+                        }" />
                 </div>
 
 
@@ -182,7 +179,6 @@ defineExpose({ refetch })
 
 
                 <Paginator :rows="limit" @page="(e) => {
-                    console.log(e)
                     offset = e.first
                     limit = e.rows
                     refetch()

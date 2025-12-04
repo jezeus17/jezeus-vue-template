@@ -40,12 +40,6 @@ export const sendRequest = async (options: {
     const res: AxiosResponse = await axiosInstance.request(axiosConfig)
     if (res) {
       if (res.status === 200 || res.status === 201) {
-        if (res.data.status == 400) {
-          console.log(res.data.response)
-          throw new HttpError(res.data.message,
-            400, [], res.data.response.data)
-        }
-        console.log(res)
         return res.data
       }
     } else throw new HttpError('Servidor no responde', 500)

@@ -4,7 +4,7 @@
     <template #content>
 
       <DataTable v-if="dataMode == 'table'" :class="internDatatable ? 'intern-datatable' : ''"
-        v-model:expandedRows="expandedRows" scrollable v-model:filters="filters as DataTableFilterMeta" :lazy="true"
+        v-model:expandedRows="expandedRows" scrollable v-model:filters="filters" :lazy="true"
         @filter="onFilter as unknown as (event: DataTableFilterEvent) => void" @sort="onSortChange" filterDisplay="menu"
         scrollHeight="flex" ref="dt" size="small" :value="tableData" :rows="5">
         <template #header>
@@ -33,10 +33,10 @@
                 <Rating v-if="col.isRating" :modelValue="data[col.fieldGetter(data) as number] as number" readonly />
                 <template v-else-if="col.isBoolean">{{
                   col.fieldGetter(data) == true ? t('global.yes') : t('global.no')
-                }}</template>
+                  }}</template>
                 <template v-else-if="col.fieldGetter(data) !== undefined">{{
                   col.fieldGetter(data)
-                }}</template>
+                  }}</template>
                 <template v-else>-</template>
               </template>
               <template v-else>
@@ -48,7 +48,7 @@
                 </template>
                 <template v-else-if="data[col.field] !== undefined">{{
                   data[col.field]
-                }}</template>
+                  }}</template>
                 <template v-else>-</template>
               </template>
 
@@ -67,6 +67,7 @@
                 <InputText v-model="filterModel.value" @keyup.enter="filterCallback()"
                   :placeholder="$t('global.search')" />
               </IconField>
+              //TODO Implement number and date filters
 
 
             </template>
@@ -147,7 +148,7 @@
 <script setup lang="ts" generic="T extends BaseModel">
 import Column from 'primevue/column';
 import Card from 'primevue/card';
-import DataTable, { type DataTableFilterEvent, type DataTableFilterMeta } from 'primevue/datatable';
+import DataTable, { type DataTableFilterEvent } from 'primevue/datatable';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import { provide } from 'vue';

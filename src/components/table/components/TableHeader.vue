@@ -21,13 +21,14 @@
         <InputIcon>
           <i class="pi pi-search" />
         </InputIcon>
-        <InputText class="w-12rem lg:w-20rem" v-model="searchQuery" :placeholder="$t('global.search')" />
+        <InputText class="w-[12rem] lg:w-[20rem]" v-model="searchQuery" :placeholder="$t('global.search')" />
       </IconField>
       <slot name="header"></slot>
       <div class="flex gap-2">
         <CreateButton v-if="!hideCreateButton" :disabled="isPending || isRefetching || isError" />
 
-        <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" variant="outlined" @click="refetch()" />
+        <Button icon="pi pi-refresh" v-tooltip="$t('global.refresh')" :disabled="isPending || isRefetching"
+          variant="outlined" @click="refetch()" />
         <!-- <Button icon="pi pi-download" variant="outlined" @click="toggle" aria-haspopup="true" :disabled="isPending || isRefetching"
           aria-controls="overlay_menu" />
         <Menu ref="menu" id="overlay_menu" :model="exportOptions" :popup="true" /> -->

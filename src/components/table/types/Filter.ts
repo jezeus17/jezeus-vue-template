@@ -1,7 +1,11 @@
+import type { DataTableFilterMetaData } from "primevue"
+
 export type FilterMetadata = {
-    [s: string]: unknown,
-    filtermode: string,
-    filterField: string,
-    value: unknown,
-    matchMode: string
+    [s: string]: string | DataTableFilterMetaData | {
+        filterMode: string,
+        filterField: string,
+        value: string,
+        matchMode: string
+    },
+
 }

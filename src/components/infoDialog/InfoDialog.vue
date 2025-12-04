@@ -28,7 +28,7 @@ import { ref, shallowRef, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button, Dialog } from 'primevue';
 import type { InfoDialogProps } from './InfoDialogProps';
-import useInfoDialog from './useINfoDialog';
+import useInfoDialog from './useInfoDialog';
 import LoadingPanel from '../ui/LoadingPanel.vue';
 const dialogProps = ref() as Ref<InfoDialogProps>
 const { uniqueId } = defineProps<{ uniqueId?: string }>()

@@ -6,7 +6,7 @@
 import { inject } from 'vue';
 import { Button } from 'primevue';
 import type { TableProps } from '../../types/TableProps';
-import useInfoDialog from '@/components/infoDialog/useINfoDialog';
+import useInfoDialog from '@/components/infoDialog/useInfoDialog';
 import type { TableMetadata } from '../../composable/useTable';
 import { useI18n } from 'vue-i18n';
 

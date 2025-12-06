@@ -1,7 +1,7 @@
 import axios from "axios";
 import HttpError from "../exceptions/HttpError";
-import TokenHandler from "../site/token-handler";
-import router from "@/router";
+import TokenHandler from "../utils/site/token-handler";
+import router from "@/common/router";
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_PATH,

@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders, type AxiosRequestConfig } from "axios";
 import { ref } from "vue";
-import TokenHandler from "../site/token-handler";
+import TokenHandler from "../utils/site/token-handler";
 
 
 

@@ -24,7 +24,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getNavbarItems, updateNavbarLabels } from "@/components/navbar/utils";
+import { getNavbarItems, updateNavbarLabels } from "@/common/components/navbar/utils";
 import Menu from "primevue/menu";
 import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";

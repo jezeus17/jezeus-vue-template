@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Navbar from "@/components/navbar/Navbar.vue";
+import Navbar from "@/common/components/navbar/Navbar.vue";
 window.scrollTo(0, 0);
 </script>
 

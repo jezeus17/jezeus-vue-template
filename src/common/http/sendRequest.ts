@@ -1,7 +1,7 @@
 import { isAxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import HttpError from '../exceptions/HttpError'
 import { axiosInstance } from './axios.config'
-import TokenHandler from '@/common/site/token-handler'
+import TokenHandler from '@/common/utils/site/token-handler'
 
 export const sendRequest = async (options: {
   url: string

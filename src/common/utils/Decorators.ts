@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import type { BaseModel } from "../models/base/BaseModel";
+import type { BaseModel } from "./models/base/BaseModel";
 export function ID(target: object, propertyKey: string) {
   Reflect.defineMetadata("fieldAsID", true, target, propertyKey);
 }

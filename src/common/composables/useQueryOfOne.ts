@@ -1,4 +1,4 @@
-import type { BaseModel } from "@/common/models/base/BaseModel";
+import type { BaseModel } from "@/common/utils/models/base/BaseModel";
 import { useQuery, type QueryObserverResult, type RefetchOptions } from "@tanstack/vue-query";
 import { watch, type Ref } from "vue";
 

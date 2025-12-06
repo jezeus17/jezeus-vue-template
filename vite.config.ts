@@ -15,7 +15,7 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss(),
     VueI18nPlugin({
-      include: path.resolve(__dirname, './src/locales/**'),
+      include: path.resolve(__dirname, './src/common/locales/**'),
     })
   ],
   resolve: {

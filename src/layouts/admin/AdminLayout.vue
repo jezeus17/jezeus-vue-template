@@ -3,7 +3,7 @@ import AdminSideBar from './components/AdminSideBar.vue';
 import { ref } from 'vue';
 import Drawer from 'primevue/drawer';
 import Button from 'primevue/button';
-import Navbar from '../../components/navbar/Navbar.vue';
+import Navbar from '../../common/components/navbar/Navbar.vue';
 
 
 const visible = ref(false)

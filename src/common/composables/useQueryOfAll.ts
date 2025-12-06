@@ -1,6 +1,6 @@
-import type { BaseModel } from "@/common/models/base/BaseModel";
+import type { BaseModel } from "@/common/utils/models/base/BaseModel";
 import type { PaginatedResponseData, ResponseData } from "@/common/types/ResponseData";
-import type { FilterMetadata } from "@/components/table/types/Filter";
+import type { FilterMetadata } from "@/common/components/table/types/Filter";
 import { useQuery, type QueryObserverResult, type RefetchOptions } from "@tanstack/vue-query";
 import type { DataTableSortEvent } from "primevue";
 import { ref, watch, watchEffect, type Ref } from "vue";

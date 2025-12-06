@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import useEvents from "../composables/useEvents";
-import { i18n } from "@/plugins/i18n";
+import { i18n } from "@/common/plugins/i18n";
 import type HttpError from "../exceptions/HttpError";
 
 const handlePromise = async (promise: () => Promise<unknown>, loading: Ref<boolean>, callBackOnSuccess: () => void) => {

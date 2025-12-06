@@ -1,4 +1,4 @@
-import { i18n } from "@/plugins/i18n"
+import { i18n } from "@/common/plugins/i18n"
 
 
 export function useTranslationHelper() {

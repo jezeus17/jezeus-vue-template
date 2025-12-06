@@ -8,6 +8,7 @@ export const routes: CustomRouteRecord[] = [
     {
         id: "general",
         path: "/",
+        name: "general",
         component: GeneralLayout,
     },
     {

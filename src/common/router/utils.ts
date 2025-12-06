@@ -7,7 +7,7 @@ interface RouteModule {
 
 export type CustomRouteRecord = { id: string, children?: CustomRouteRecord[], parents?: string[] | null, icon?: string } & RouteRecordRaw
 
-export function getRouterArray() {
+export function generateRoutes() {
   const modules = import.meta.glob<RouteModule>('@/**/*route.ts', { eager: true });
 
   const routesList: CustomRouteRecord[] = [];
@@ -31,8 +31,6 @@ export function getRouterArray() {
 function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
   const nodeMap = new Map<string | number, CustomRouteRecord>();
   const rootNodes: CustomRouteRecord[] = [];
-  const processedNodes = new Set<string | number>();
-  const cycles: { nodeId: string | number; parents: (string | number)[] }[] = [];
 
   const allIds = new Set(items.map(item => item.id));
 
@@ -49,30 +47,6 @@ function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
     });
   });
 
-  items.forEach(item => {
-    const checkForCycle = (nodeId: string | number, visited: Set<string | number>): boolean => {
-      if (visited.has(nodeId)) {
-        return true;
-      }
-
-      visited.add(nodeId);
-      const node = nodeMap.get(nodeId);
-      if (!node?.parents) return false;
-
-      for (const parentId of node.parents) {
-        if (checkForCycle(parentId, new Set(visited))) {
-          cycles.push({ nodeId: item.id, parents: item.parents || [] });
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    if (item.parents && item.parents.length > 0) {
-      checkForCycle(item.id, new Set());
-    }
-  });
 
   items.forEach(item => {
     const node = nodeMap.get(item.id)!;
@@ -84,8 +58,7 @@ function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
             child => child.id === node.id
           );
           if (!alreadyChild) {
-            parent.children?.push(node);
-            processedNodes.add(node.id);
+            parent.children?.push({ ...node, name: `${parent.name as string}/${node.name as string}` });
           }
         }
       });
@@ -96,8 +69,7 @@ function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
     const node = nodeMap.get(item.id)!;
     const isRoot = !item.parents ||
       item.parents.length === 0 ||
-      !item.parents.some(parentId => nodeMap.has(parentId)) ||
-      cycles.some(cycle => cycle.nodeId === item.id);
+      !item.parents.some(parentId => nodeMap.has(parentId))
     const alreadyInRoot = rootNodes.some(root => root.id === node.id);
     if (isRoot && !alreadyInRoot) {
       rootNodes.push({
@@ -109,7 +81,6 @@ function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
       });
     }
   });
-
   return rootNodes
 }
 

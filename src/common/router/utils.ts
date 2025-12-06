@@ -5,17 +5,20 @@ interface RouteModule {
   [key: string]: RouteRecordRaw[] | undefined;
 }
 
-export type CustomRouteRecord = { id: string, children?: CustomRouteRecord[], parents?: string[] | null, icon?: string } & RouteRecordRaw
+export type CustomRouteRecord = {
+  id: string,
+  children?: CustomRouteRecord[],
+  parents?: string[] | null,
+  icon?: string
+}
+  & RouteRecordRaw
 
 export function generateRoutes() {
   const modules = import.meta.glob<RouteModule>('@/**/*route.ts', { eager: true });
-
   const routesList: CustomRouteRecord[] = [];
 
   Object.values(modules).forEach((module) => {
     if (!module) return;
-
-
     const exports = Object.values(module).filter(
       (exportItem): exportItem is CustomRouteRecord[] =>
         exportItem !== undefined
@@ -27,11 +30,9 @@ export function generateRoutes() {
   return buildTreeWithParents(routesList)
 }
 
-
 function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
   const nodeMap = new Map<string | number, CustomRouteRecord>();
   const rootNodes: CustomRouteRecord[] = [];
-
   const allIds = new Set(items.map(item => item.id));
 
   items.forEach(item => {
@@ -39,14 +40,12 @@ function buildTreeWithParents(items: CustomRouteRecord[]): CustomRouteRecord[] {
       parentId !== item.id &&
       allIds.has(parentId)
     ) || [];
-
     nodeMap.set(item.id, {
       ...item,
       children: [],
       parents: validParents
     });
   });
-
 
   items.forEach(item => {
     const node = nodeMap.get(item.id)!;
